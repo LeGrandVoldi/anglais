@@ -652,11 +652,12 @@
 
         // Message de fin
         function showCompletionMessage() {
+            const total = phrases.length;
             const displayArea = document.getElementById('phraseDisplayArea');
             displayArea.innerHTML = `
                 <div class="phrase-display fade-in text-center">
                     <h2>🎉 Félicitations !</h2>
-                    <p style="font-size: 1.2rem; margin-top: 20px;">Vous avez écouté toutes les phrases !</p>
+                    <p style="font-size: 1.2rem; margin-top: 20px;">Vous avez écouté les ${total} expressions !</p>
                     <button class="btn btn-success btn-custom mt-3" onclick="startListeningMode()">
                         <i class="bi bi-arrow-clockwise"></i> Recommencer
                     </button>
@@ -667,15 +668,15 @@
             `;
             displayArea.style.display = 'block';
             document.getElementById('listeningControls').style.display = 'none';
-            document.getElementById('progressIndicator').textContent = 'Terminé ! 🎉';
+            document.getElementById('progressIndicator').textContent = `Terminé ! ${total} expressions écoutées 🎉`;
         }
 
-        // Mise à jour de l'indicateur de progression
+        // Mise à jour de l'indicateur de progression - le total est caché pendant l'écoute
         function updateProgressIndicator() {
             const total = phrases.length;
             const remaining = listeningMode.remainingPhrases.length;
             const current = total - remaining;
-            document.getElementById('progressIndicator').textContent = `Phrase ${current} / ${total}`;
+            document.getElementById('progressIndicator').textContent = `Phrase ${current} / ?`;
             document.getElementById('listeningControls').style.display = 'block';
         }
 
