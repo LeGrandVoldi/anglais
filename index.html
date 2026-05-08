@@ -1,0 +1,1663 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Apprentissage Anglais & Italien ↔ Français</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        :root{
+            --bg1:#667eea;
+            --bg2:#764ba2;
+            --card:#ffffff;
+            --soft:#f8f9fa;
+            --line:#e9ecef;
+            --text:#1f2937;
+        }
+        * { box-sizing: border-box; }
+        body{
+            min-height:100vh;
+            margin:0;
+            padding:16px;
+            background: linear-gradient(135deg,var(--bg1) 0%,var(--bg2) 100%);
+            color:var(--text);
+        }
+        .app-shell{
+            max-width:1200px;
+            margin:0 auto;
+        }
+        .hero{
+            color:#fff;
+            text-align:center;
+            margin-bottom:18px;
+        }
+        .hero h1{
+            font-size: clamp(1.5rem, 4vw, 2.4rem);
+            font-weight:800;
+            margin-bottom:6px;
+        }
+        .hero p{
+            opacity:.9;
+            margin-bottom:0;
+            font-size: .98rem;
+        }
+        .glass-card{
+            border:none;
+            border-radius:22px;
+            box-shadow:0 18px 45px rgba(0,0,0,.16);
+            overflow:hidden;
+            background:rgba(255,255,255,.98);
+            margin-bottom:18px;
+        }
+        .card-top{
+            background: linear-gradient(135deg, var(--bg1), var(--bg2));
+            color:#fff;
+            padding:16px 18px;
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:10px;
+            flex-wrap:wrap;
+        }
+        .card-top h2{
+            font-size:1.05rem;
+            margin:0;
+            font-weight:700;
+        }
+        .badge-soft{
+            background:rgba(255,255,255,.16);
+            color:#fff;
+            border:1px solid rgba(255,255,255,.18);
+            border-radius:999px;
+            padding:6px 12px;
+            font-size:.86rem;
+        }
+        .card-body-pad{
+            padding:16px;
+        }
+        .tabs-wrap{
+            background:rgba(255,255,255,.12);
+            border-radius:18px;
+            padding:10px;
+            backdrop-filter: blur(10px);
+        }
+        .nav-pills .nav-link{
+            border-radius:999px;
+            color:#fff;
+            font-weight:600;
+            padding:10px 16px;
+        }
+        .nav-pills .nav-link.active{
+            background:#fff;
+            color:#4c1d95;
+            box-shadow:0 8px 20px rgba(0,0,0,.12);
+        }
+        .subtle-note{
+            background: var(--soft);
+            border:1px solid var(--line);
+            border-radius:14px;
+            padding:12px 14px;
+            color:#4b5563;
+            font-size:.94rem;
+        }
+        .form-label{
+            font-weight:700;
+            margin-bottom:8px;
+        }
+        .form-control, .form-select{
+            border-radius:14px;
+            padding:12px 14px;
+            border:1px solid #d1d5db;
+            box-shadow:none !important;
+        }
+        .btn{
+            border-radius:999px;
+            font-weight:700;
+        }
+        .btn-soft{
+            background:#f3f4f6;
+            border:1px solid #e5e7eb;
+            color:#111827;
+        }
+        .btn-soft:hover{
+            background:#e5e7eb;
+            color:#111827;
+        }
+        .list-toolbar{
+            display:flex;
+            gap:8px;
+            flex-wrap:wrap;
+            align-items:center;
+            justify-content:space-between;
+            margin-bottom:12px;
+        }
+        .list-toolbar .actions{
+            display:flex;
+            gap:8px;
+            flex-wrap:wrap;
+        }
+        .stat-grid{
+            display:grid;
+            grid-template-columns:repeat(4, minmax(0, 1fr));
+            gap:10px;
+            margin-bottom:14px;
+        }
+        .stat-box{
+            background:#fff;
+            border:1px solid var(--line);
+            border-radius:16px;
+            padding:12px;
+            box-shadow:0 8px 18px rgba(0,0,0,.04);
+        }
+        .stat-box .label{
+            font-size:.82rem;
+            color:#6b7280;
+            margin-bottom:4px;
+        }
+        .stat-box .value{
+            font-size:1.2rem;
+            font-weight:800;
+            color:#111827;
+        }
+        .phrase-item{
+            background:#fff;
+            border:1px solid var(--line);
+            border-left:5px solid #7c3aed;
+            border-radius:18px;
+            padding:14px;
+            margin-bottom:12px;
+            box-shadow:0 10px 20px rgba(0,0,0,.04);
+        }
+        .phrase-header{
+            display:flex;
+            align-items:flex-start;
+            justify-content:space-between;
+            gap:10px;
+            flex-wrap:wrap;
+        }
+        .phrase-meta{
+            color:#6b7280;
+            font-size:.84rem;
+        }
+        .phrase-body{
+            margin-top:10px;
+            display:grid;
+            gap:8px;
+        }
+        .lang-row{
+            background: #fafafa;
+            border:1px solid #eceff3;
+            border-radius:14px;
+            padding:10px 12px;
+        }
+        .lang-row strong{
+            display:inline-block;
+            margin-bottom:4px;
+        }
+        .hidden-row{
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:10px;
+            flex-wrap:wrap;
+            background: linear-gradient(135deg, rgba(102,126,234,.1), rgba(118,75,162,.08));
+            border:1px dashed rgba(118,75,162,.28);
+            border-radius:14px;
+            padding:12px;
+        }
+        .hidden-text{
+            color:#6b7280;
+            font-style:italic;
+        }
+        .btn-group-wrap{
+            display:flex;
+            gap:8px;
+            flex-wrap:wrap;
+            justify-content:flex-end;
+        }
+        .archive-month{
+            border:1px solid var(--line);
+            border-radius:18px;
+            overflow:hidden;
+            margin-bottom:14px;
+            background:#fff;
+        }
+        .archive-month .archive-head{
+            padding:14px 16px;
+            background:#f9fafb;
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:10px;
+            flex-wrap:wrap;
+            border-bottom:1px solid var(--line);
+        }
+        .archive-month .archive-grid{
+            padding:14px 16px;
+            display:grid;
+            grid-template-columns:1fr;
+            gap:12px;
+        }
+        .archive-subcard{
+            border:1px solid var(--line);
+            border-radius:16px;
+            overflow:hidden;
+            background:#fff;
+            box-shadow:0 10px 20px rgba(0,0,0,.03);
+        }
+        .archive-subhead{
+            padding:12px 14px;
+            background:linear-gradient(135deg, rgba(102,126,234,.08), rgba(118,75,162,.06));
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:10px;
+            flex-wrap:wrap;
+        }
+        .archive-subtitle{
+            font-weight:800;
+            color:#111827;
+        }
+        .archive-submeta{
+            font-size:.84rem;
+            color:#6b7280;
+            margin-top:2px;
+        }
+        .archive-subactions{
+            display:flex;
+            gap:8px;
+            flex-wrap:wrap;
+            justify-content:flex-end;
+        }
+        .archive-toggle{
+            border:1px solid #c4b5fd;
+            background:#fff;
+            color:#5b21b6;
+            font-weight:700;
+        }
+        .archive-toggle:hover{
+            background:#f5f3ff;
+            color:#4c1d95;
+        }
+        .archive-subbody{
+            border-top:1px solid var(--line);
+            padding:12px 14px;
+            display:none;
+        }
+        .archive-table{
+            width:100%;
+            border-collapse:separate;
+            border-spacing:0 10px;
+        }
+        .archive-table th{
+            text-align:left;
+            font-size:.82rem;
+            color:#6b7280;
+            padding:0 10px 6px;
+            white-space:nowrap;
+        }
+        .archive-table td{
+            background:#fafafa;
+            border-top:1px solid #eef2f7;
+            border-bottom:1px solid #eef2f7;
+            padding:10px;
+            vertical-align:top;
+        }
+        .archive-table td:first-child{
+            border-left:1px solid #eef2f7;
+            border-top-left-radius:12px;
+            border-bottom-left-radius:12px;
+            width:150px;
+            white-space:nowrap;
+            color:#6b7280;
+            font-size:.84rem;
+        }
+        .archive-table td:last-child{
+            border-right:1px solid #eef2f7;
+            border-top-right-radius:12px;
+            border-bottom-right-radius:12px;
+        }
+        .archive-cell-actions{
+            display:flex;
+            gap:6px;
+            flex-wrap:wrap;
+        }
+        .archive-empty-row{
+            text-align:center;
+            padding:18px 10px;
+            color:#6b7280;
+            background:#fafafa;
+            border:1px dashed #e5e7eb;
+            border-radius:12px;
+        }
+        .archive-listening-panel{
+            background: linear-gradient(135deg, #0f766e, #22c55e);
+            color:#fff;
+            border-radius:22px;
+            padding:18px;
+            box-shadow:0 18px 45px rgba(0,0,0,.12);
+            min-height:260px;
+        }
+        .archive-listening-panel .title{
+            display:flex;
+            justify-content:space-between;
+            gap:10px;
+            flex-wrap:wrap;
+            align-items:center;
+            margin-bottom:10px;
+        }
+        .archive-listening-panel .big-box{
+            background:#fff;
+            color:#111827;
+            border-radius:18px;
+            padding:16px;
+            min-height:130px;
+            box-shadow:0 12px 22px rgba(0,0,0,.12);
+        }
+        .archive-listening-panel .controls{
+            display:flex;
+            gap:8px;
+            flex-wrap:wrap;
+            margin-top:12px;
+        }
+        .month-chip{
+            display:inline-flex;
+            align-items:center;
+            gap:6px;
+            padding:6px 10px;
+            border-radius:999px;
+            background:#ede9fe;
+            color:#5b21b6;
+            font-weight:700;
+            font-size:.85rem;
+        }
+        .listening-panel{
+            background: linear-gradient(135deg, #0f766e, #22c55e);
+            color:#fff;
+            border-radius:22px;
+            padding:18px;
+            box-shadow:0 18px 45px rgba(0,0,0,.12);
+            min-height:260px;
+            display:none;
+        }
+        .listening-panel .title{
+            display:flex;
+            justify-content:space-between;
+            gap:10px;
+            flex-wrap:wrap;
+            align-items:center;
+            margin-bottom:10px;
+        }
+        .listening-panel .big-box{
+            background:#fff;
+            color:#111827;
+            border-radius:18px;
+            padding:16px;
+            min-height:130px;
+            box-shadow:0 12px 22px rgba(0,0,0,.12);
+        }
+        .listening-panel .controls{
+            display:flex;
+            gap:8px;
+            flex-wrap:wrap;
+            margin-top:12px;
+        }
+        .muted-white{
+            color:rgba(255,255,255,.88);
+        }
+        .empty-state{
+            text-align:center;
+            padding:28px 14px;
+            color:#6b7280;
+        }
+        .empty-state i{
+            font-size:2.8rem;
+            display:block;
+            margin-bottom:10px;
+        }
+        .fade-in{
+            animation: fadeIn .35s ease-in;
+        }
+        @keyframes fadeIn{
+            from{ opacity:0; transform:translateY(8px); }
+            to{ opacity:1; transform:translateY(0); }
+        }
+        .toast-mini{
+            position:fixed;
+            top:18px;
+            right:18px;
+            z-index:9999;
+            color:#fff;
+            border-radius:14px;
+            padding:14px 18px;
+            box-shadow:0 16px 35px rgba(0,0,0,.2);
+            animation: toastIn .25s ease-out;
+            max-width:min(92vw, 360px);
+        }
+        @keyframes toastIn{
+            from{ transform:translateX(40px); opacity:0; }
+            to{ transform:translateX(0); opacity:1; }
+        }
+        .small-help{
+            font-size:.86rem;
+            color:#6b7280;
+        }
+        @media (max-width: 992px){
+            .stat-grid{ grid-template-columns:repeat(2, minmax(0, 1fr)); }
+        }
+        @media (max-width: 576px){
+            body{ padding:10px; }
+            .card-top, .card-body-pad{ padding:12px; }
+            .glass-card{ border-radius:18px; }
+            .nav-pills .nav-link{ padding:8px 12px; font-size:.92rem; }
+            .stat-grid{ grid-template-columns:1fr; }
+            .btn-group-wrap, .list-toolbar .actions{ width:100%; }
+            .list-toolbar{ align-items:stretch; }
+        }
+    </style>
+</head>
+<body>
+<div class="app-shell">
+    <div class="hero">
+        <h1><i class="bi bi-translate"></i> Apprentissage Anglais & Italien ↔ Français</h1>
+        <p>Deux blocs séparés, un suivi par mois, et une archive pour revoir les anciens mois.</p>
+    </div>
+
+    <div class="glass-card">
+        <div class="card-body-pad">
+            <div class="tabs-wrap">
+                <ul class="nav nav-pills nav-justified" id="mainTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="en-tab" data-bs-toggle="pill" data-bs-target="#en-panel" type="button" role="tab">
+                            <i class="bi bi-flag-fill"></i> Anglais ↔ Français
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="it-tab" data-bs-toggle="pill" data-bs-target="#it-panel" type="button" role="tab">
+                            <i class="bi bi-globe2"></i> Italien ↔ Français
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="archive-tab" data-bs-toggle="pill" data-bs-target="#archive-panel" type="button" role="tab">
+                            <i class="bi bi-archive"></i> Archive
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-content" id="mainTabsContent">
+        <div class="tab-pane fade show active" id="en-panel" role="tabpanel" aria-labelledby="en-tab" tabindex="0">
+            <div class="glass-card">
+                <div class="card-top">
+                    <h2><i class="bi bi-journal-plus"></i> Bloc Anglais → Français</h2>
+                    <span class="badge-soft" id="en-month-label">Mois courant</span>
+                </div>
+                <div class="card-body-pad">
+                    <div class="subtle-note mb-3">
+                        Toutes les données ajoutées ici sont rangées automatiquement dans le mois en cours. Quand le mois change, elles passent dans l’archive sans être supprimées.
+                    </div>
+
+                    <div class="stat-grid">
+                        <div class="stat-box">
+                            <div class="label">Phrases ce mois</div>
+                            <div class="value" id="en-count-month">0</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="label">Total anglais</div>
+                            <div class="value" id="en-count-total">0</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="label">Mois disponibles</div>
+                            <div class="value" id="en-months-total">0</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="label">Statut audio</div>
+                            <div class="value"><i class="bi bi-volume-up"></i></div>
+                        </div>
+                    </div>
+
+                    <form id="form-en" class="mb-4">
+                        <div class="mb-3">
+                            <label class="form-label"><i class="bi bi-chat-left-text"></i> Expression en anglais</label>
+                            <input type="text" class="form-control" id="en-source" placeholder="Hello, how are you?" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label"><i class="bi bi-chat-left-quote"></i> Traduction en français</label>
+                            <input type="text" class="form-control" id="en-target" placeholder="Bonjour, comment ça va ?" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="bi bi-save"></i> Enregistrer dans le mois en cours
+                        </button>
+                    </form>
+
+                    <div class="list-toolbar">
+                        <div class="actions">
+                            <button class="btn btn-success" id="en-listen-forward" type="button" disabled>
+                                <i class="bi bi-headphones"></i> EN → FR
+                            </button>
+                            <button class="btn btn-info text-white" id="en-listen-reverse" type="button" disabled>
+                                <i class="bi bi-arrow-left-right"></i> FR → EN
+                            </button>
+                            <button class="btn btn-outline-danger" id="en-clear-month" type="button" disabled>
+                                <i class="bi bi-trash"></i> Supprimer le mois
+                            </button>
+                        </div>
+                        <div class="small-help" id="en-list-help"></div>
+                    </div>
+
+                    <div id="en-list"></div>
+
+                    <div class="listening-panel mt-3" id="en-listening-panel">
+                        <div class="title">
+                            <div>
+                                <div class="badge-soft mb-2" id="en-listening-badge"></div>
+                                <div class="muted-white" id="en-progress">Prêt</div>
+                            </div>
+                            <button class="btn btn-light btn-sm" id="en-exit-listen" type="button">
+                                <i class="bi bi-x-circle"></i> Quitter
+                            </button>
+                        </div>
+                        <div class="big-box" id="en-listening-box">
+                            <div class="text-center text-muted py-4">
+                                <i class="bi bi-soundwave" style="font-size:2rem;"></i>
+                                <div class="mt-2">Cliquez sur un mode d’écoute</div>
+                            </div>
+                        </div>
+                        <div class="controls">
+                            <button class="btn btn-light" id="en-show" type="button">
+                                <i class="bi bi-eye"></i> Afficher
+                            </button>
+                            <button class="btn btn-outline-light" id="en-replay" type="button">
+                                <i class="bi bi-arrow-clockwise"></i> Réécouter
+                            </button>
+                            <button class="btn btn-warning" id="en-next" type="button">
+                                <i class="bi bi-skip-forward"></i> Suivant
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="it-panel" role="tabpanel" aria-labelledby="it-tab" tabindex="0">
+            <div class="glass-card">
+                <div class="card-top">
+                    <h2><i class="bi bi-journal-plus"></i> Bloc Italien → Français</h2>
+                    <span class="badge-soft" id="it-month-label">Mois courant</span>
+                </div>
+                <div class="card-body-pad">
+                    <div class="subtle-note mb-3">
+                        Ici, vous enregistrez vos expressions italiennes et leurs traductions françaises. Le classement mensuel fonctionne exactement comme dans le bloc anglais.
+                    </div>
+
+                    <div class="stat-grid">
+                        <div class="stat-box">
+                            <div class="label">Phrases ce mois</div>
+                            <div class="value" id="it-count-month">0</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="label">Total italien</div>
+                            <div class="value" id="it-count-total">0</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="label">Mois disponibles</div>
+                            <div class="value" id="it-months-total">0</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="label">Statut audio</div>
+                            <div class="value"><i class="bi bi-volume-up"></i></div>
+                        </div>
+                    </div>
+
+                    <form id="form-it" class="mb-4">
+                        <div class="mb-3">
+                            <label class="form-label"><i class="bi bi-chat-left-text"></i> Expression en italien</label>
+                            <input type="text" class="form-control" id="it-source" placeholder="Come stai?" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label"><i class="bi bi-chat-left-quote"></i> Traduction en français</label>
+                            <input type="text" class="form-control" id="it-target" placeholder="Comment ça va ?" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="bi bi-save"></i> Enregistrer dans le mois en cours
+                        </button>
+                    </form>
+
+                    <div class="list-toolbar">
+                        <div class="actions">
+                            <button class="btn btn-success" id="it-listen-forward" type="button" disabled>
+                                <i class="bi bi-headphones"></i> IT → FR
+                            </button>
+                            <button class="btn btn-info text-white" id="it-listen-reverse" type="button" disabled>
+                                <i class="bi bi-arrow-left-right"></i> FR → IT
+                            </button>
+                            <button class="btn btn-outline-danger" id="it-clear-month" type="button" disabled>
+                                <i class="bi bi-trash"></i> Supprimer le mois
+                            </button>
+                        </div>
+                        <div class="small-help" id="it-list-help"></div>
+                    </div>
+
+                    <div id="it-list"></div>
+
+                    <div class="listening-panel mt-3" id="it-listening-panel">
+                        <div class="title">
+                            <div>
+                                <div class="badge-soft mb-2" id="it-listening-badge"></div>
+                                <div class="muted-white" id="it-progress">Prêt</div>
+                            </div>
+                            <button class="btn btn-light btn-sm" id="it-exit-listen" type="button">
+                                <i class="bi bi-x-circle"></i> Quitter
+                            </button>
+                        </div>
+                        <div class="big-box" id="it-listening-box">
+                            <div class="text-center text-muted py-4">
+                                <i class="bi bi-soundwave" style="font-size:2rem;"></i>
+                                <div class="mt-2">Cliquez sur un mode d’écoute</div>
+                            </div>
+                        </div>
+                        <div class="controls">
+                            <button class="btn btn-light" id="it-show" type="button">
+                                <i class="bi bi-eye"></i> Afficher
+                            </button>
+                            <button class="btn btn-outline-light" id="it-replay" type="button">
+                                <i class="bi bi-arrow-clockwise"></i> Réécouter
+                            </button>
+                            <button class="btn btn-warning" id="it-next" type="button">
+                                <i class="bi bi-skip-forward"></i> Suivant
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="archive-panel" role="tabpanel" aria-labelledby="archive-tab" tabindex="0">
+            <div class="glass-card">
+                <div class="card-top">
+                    <h2><i class="bi bi-archive"></i> Archive mensuelle</h2>
+                    <span class="badge-soft" id="archive-summary">0 mois</span>
+                </div>
+                <div class="card-body-pad">
+                    <div class="subtle-note mb-3">
+                        Vous retrouvez ici les mois précédents. Chaque phrase reste consultable et écoutable, même après le changement de mois.
+                    </div>
+
+                    <div class="archive-listening-panel mb-3" id="archive-listening-panel" style="display:none;">
+                        <div class="title">
+                            <div>
+                                <div class="badge-soft mb-2" id="archive-listening-badge"></div>
+                                <div class="muted-white" id="archive-progress">Prêt</div>
+                            </div>
+                            <button class="btn btn-light btn-sm" id="archive-exit-listen" type="button">
+                                <i class="bi bi-x-circle"></i> Quitter
+                            </button>
+                        </div>
+                        <div class="big-box" id="archive-listening-box">
+                            <div class="text-center text-muted py-4">
+                                <i class="bi bi-soundwave" style="font-size:2rem;"></i>
+                                <div class="mt-2">Sélectionnez un mois et un bloc</div>
+                            </div>
+                        </div>
+                        <div class="controls">
+                            <button class="btn btn-light" id="archive-show" type="button">
+                                <i class="bi bi-eye"></i> Afficher
+                            </button>
+                            <button class="btn btn-outline-light" id="archive-replay" type="button">
+                                <i class="bi bi-arrow-clockwise"></i> Réécouter
+                            </button>
+                            <button class="btn btn-warning" id="archive-next" type="button">
+                                <i class="bi bi-skip-forward"></i> Suivant
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="archive-list"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+(() => {
+    const STORAGE_KEY = 'dual_language_monthly_v2';
+    const LEGACY_KEY = 'language_phrases';
+
+    const APP = {
+        entries: [],
+        blocks: {
+            en: {
+                label: 'Anglais',
+                title: 'Anglais → Français',
+                sourceLang: 'en-US',
+                targetLang: 'fr-FR',
+                sourcePlaceholder: 'Hello, how are you?',
+                targetPlaceholder: 'Bonjour, comment ça va ?',
+                form: 'form-en',
+                sourceInput: 'en-source',
+                targetInput: 'en-target',
+                list: 'en-list',
+                monthLabel: 'en-month-label',
+                countMonth: 'en-count-month',
+                countTotal: 'en-count-total',
+                monthsTotal: 'en-months-total',
+                listHelp: 'en-list-help',
+                listenForward: 'en-listen-forward',
+                listenReverse: 'en-listen-reverse',
+                clearMonth: 'en-clear-month',
+                panel: 'en-listening-panel',
+                listeningBadge: 'en-listening-badge',
+                progress: 'en-progress',
+                box: 'en-listening-box',
+                show: 'en-show',
+                replay: 'en-replay',
+                next: 'en-next',
+                exit: 'en-exit-listen'
+            },
+            it: {
+                label: 'Italien',
+                title: 'Italien → Français',
+                sourceLang: 'it-IT',
+                targetLang: 'fr-FR',
+                sourcePlaceholder: 'Come stai?',
+                targetPlaceholder: 'Comment ça va ?',
+                form: 'form-it',
+                sourceInput: 'it-source',
+                targetInput: 'it-target',
+                list: 'it-list',
+                monthLabel: 'it-month-label',
+                countMonth: 'it-count-month',
+                countTotal: 'it-count-total',
+                monthsTotal: 'it-months-total',
+                listHelp: 'it-list-help',
+                listenForward: 'it-listen-forward',
+                listenReverse: 'it-listen-reverse',
+                clearMonth: 'it-clear-month',
+                panel: 'it-listening-panel',
+                listeningBadge: 'it-listening-badge',
+                progress: 'it-progress',
+                box: 'it-listening-box',
+                show: 'it-show',
+                replay: 'it-replay',
+                next: 'it-next',
+                exit: 'it-exit-listen'
+            }
+        },
+        listening: {
+            activeBlock: null,
+            direction: null,
+            queue: [],
+            current: null,
+            revealed: false
+        },
+        archiveListening: {
+            active: false,
+            monthKey: null,
+            block: null,
+            direction: null,
+            queue: [],
+            current: null,
+            revealed: false
+        }
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+        loadEntries();
+        wireEvents();
+        renderAll();
+    });
+
+    function wireEvents() {
+        document.getElementById('form-en').addEventListener('submit', (e) => addEntry(e, 'en'));
+        document.getElementById('form-it').addEventListener('submit', (e) => addEntry(e, 'it'));
+
+        document.getElementById('en-listen-forward').addEventListener('click', () => startListening('en', 'forward'));
+        document.getElementById('en-listen-reverse').addEventListener('click', () => startListening('en', 'reverse'));
+        document.getElementById('it-listen-forward').addEventListener('click', () => startListening('it', 'forward'));
+        document.getElementById('it-listen-reverse').addEventListener('click', () => startListening('it', 'reverse'));
+
+        document.getElementById('en-clear-month').addEventListener('click', () => clearCurrentMonth('en'));
+        document.getElementById('it-clear-month').addEventListener('click', () => clearCurrentMonth('it'));
+
+        document.getElementById('en-show').addEventListener('click', showCurrentListening);
+        document.getElementById('en-replay').addEventListener('click', replayCurrentListening);
+        document.getElementById('en-next').addEventListener('click', nextListening);
+        document.getElementById('en-exit-listen').addEventListener('click', exitListening);
+
+        document.getElementById('it-show').addEventListener('click', showCurrentListening);
+        document.getElementById('it-replay').addEventListener('click', replayCurrentListening);
+        document.getElementById('it-next').addEventListener('click', nextListening);
+        document.getElementById('it-exit-listen').addEventListener('click', exitListening);
+
+        document.getElementById('archive-show').addEventListener('click', showArchiveCurrentListening);
+        document.getElementById('archive-replay').addEventListener('click', replayArchiveCurrentListening);
+        document.getElementById('archive-next').addEventListener('click', nextArchiveListening);
+        document.getElementById('archive-exit-listen').addEventListener('click', exitArchiveListening);
+
+        document.addEventListener('click', handleGlobalClicks);
+    }
+
+    function handleGlobalClicks(e) {
+        const actionBtn = e.target.closest('[data-action]');
+        if (!actionBtn) return;
+
+        const action = actionBtn.dataset.action;
+        if (action === 'toggle') {
+            toggleEntry(actionBtn.dataset.id);
+        } else if (action === 'speak') {
+            speakText(actionBtn.dataset.text, actionBtn.dataset.lang);
+        } else if (action === 'delete') {
+            deleteEntry(actionBtn.dataset.id);
+        } else if (action === 'archive-toggle') {
+            toggleArchiveSection(actionBtn.dataset.month, actionBtn.dataset.block);
+        } else if (action === 'archive-listen') {
+            startArchiveListening(actionBtn.dataset.month, actionBtn.dataset.block, actionBtn.dataset.direction);
+        }
+    }
+
+    function loadEntries() {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+            try {
+                const parsed = JSON.parse(raw);
+                APP.entries = Array.isArray(parsed) ? parsed : (parsed.entries || []);
+                normalizeEntries();
+                return;
+            } catch (err) {
+                console.warn('Impossible de lire la nouvelle structure.', err);
+            }
+        }
+
+        const legacy = localStorage.getItem(LEGACY_KEY);
+        if (legacy) {
+            try {
+                const parsed = JSON.parse(legacy);
+                if (Array.isArray(parsed)) {
+                    APP.entries = parsed.map(item => ({
+                        id: item.id || Date.now() + Math.random(),
+                        block: 'en',
+                        sourceText: item.english || '',
+                        targetText: item.french || '',
+                        sourceLang: 'en-US',
+                        targetLang: 'fr-FR',
+                        createdAt: new Date().toISOString(),
+                        monthKey: getCurrentMonthKey()
+                    })).filter(item => item.sourceText && item.targetText);
+                    saveEntries();
+                    return;
+                }
+            } catch (err) {
+                console.warn('Impossible de lire les anciennes données.', err);
+            }
+        }
+
+        APP.entries = [];
+        saveEntries();
+    }
+
+    function normalizeEntries() {
+        APP.entries = (APP.entries || []).map(item => {
+            const createdAt = item.createdAt || new Date().toISOString();
+            const block = item.block === 'it' ? 'it' : 'en';
+            return {
+                id: item.id || Date.now() + Math.random(),
+                block,
+                sourceText: item.sourceText || item.english || '',
+                targetText: item.targetText || item.french || '',
+                sourceLang: item.sourceLang || (block === 'en' ? 'en-US' : 'it-IT'),
+                targetLang: item.targetLang || 'fr-FR',
+                createdAt,
+                monthKey: item.monthKey || createdAt.slice(0, 7),
+                revealed: Boolean(item.revealed)
+            };
+        }).filter(item => item.sourceText && item.targetText);
+
+        saveEntries();
+    }
+
+    function saveEntries() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(APP.entries));
+    }
+
+    function getCurrentMonthKey() {
+        return new Date().toISOString().slice(0, 7);
+    }
+
+    function monthLabel(monthKey) {
+        const [year, month] = monthKey.split('-').map(Number);
+        const date = new Date(year, month - 1, 1);
+        const label = date.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
+        return label.charAt(0).toUpperCase() + label.slice(1);
+    }
+
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text ?? '';
+        return div.innerHTML;
+    }
+
+    function escapeJs(text) {
+        return String(text ?? '')
+            .replace(/\\/g, '\\\\')
+            .replace(/'/g, "\\'")
+            .replace(/\r/g, '')
+            .replace(/\n/g, '\\n');
+    }
+
+    function formatDate(iso) {
+        try {
+            return new Date(iso).toLocaleString('fr-FR', {
+                day: '2-digit',
+                month: 'short',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        } catch {
+            return '';
+        }
+    }
+
+    function addEntry(event, block) {
+        event.preventDefault();
+        const cfg = APP.blocks[block];
+        const source = document.getElementById(cfg.sourceInput).value.trim();
+        const target = document.getElementById(cfg.targetInput).value.trim();
+
+        if (!source || !target) return;
+
+        const now = new Date().toISOString();
+        APP.entries.unshift({
+            id: `${block}-${Date.now()}-${Math.random().toString(16).slice(2)}`,
+            block,
+            sourceText: source,
+            targetText: target,
+            sourceLang: cfg.sourceLang,
+            targetLang: cfg.targetLang,
+            createdAt: now,
+            monthKey: now.slice(0, 7),
+            revealed: false
+        });
+
+        saveEntries();
+        document.getElementById(cfg.form).reset();
+        renderAll();
+        toast(block === 'en' ? 'Expression anglaise enregistrée.' : 'Expression italienne enregistrée.', 'success');
+    }
+
+    function getEntries(block, monthKey = getCurrentMonthKey()) {
+        return APP.entries.filter(item => item.block === block && item.monthKey === monthKey);
+    }
+
+    function getMonthsForBlock(block) {
+        return [...new Set(APP.entries.filter(item => item.block === block).map(item => item.monthKey))]
+            .sort((a, b) => b.localeCompare(a));
+    }
+
+    function renderAll() {
+        renderBlock('en');
+        renderBlock('it');
+        renderArchive();
+        renderListeningVisibility();
+    }
+
+    function renderBlock(block) {
+        const cfg = APP.blocks[block];
+        const monthKey = getCurrentMonthKey();
+        const monthEntries = getEntries(block, monthKey);
+        const totalEntries = APP.entries.filter(item => item.block === block).length;
+        const monthsCount = getMonthsForBlock(block).length;
+
+        document.getElementById(cfg.monthLabel).textContent = `Mois en cours : ${monthLabel(monthKey)}`;
+        document.getElementById(cfg.countMonth).textContent = monthEntries.length;
+        document.getElementById(cfg.countTotal).textContent = totalEntries;
+        document.getElementById(cfg.monthsTotal).textContent = monthsCount;
+
+        document.getElementById(cfg.listenForward).disabled = monthEntries.length === 0;
+        document.getElementById(cfg.listenReverse).disabled = monthEntries.length === 0;
+        document.getElementById(cfg.clearMonth).disabled = monthEntries.length === 0;
+
+        document.getElementById(cfg.listHelp).textContent = monthEntries.length
+            ? `${monthEntries.length} expression(s) pour ${monthLabel(monthKey)}`
+            : `Aucune expression dans ${monthLabel(monthKey)} pour l’instant.`;
+
+        const listEl = document.getElementById(cfg.list);
+        if (!monthEntries.length) {
+            listEl.innerHTML = `
+                <div class="empty-state">
+                    <i class="bi bi-inbox"></i>
+                    <div>Aucune expression enregistrée dans ce bloc pour ce mois.</div>
+                </div>
+            `;
+            return;
+        }
+
+        listEl.innerHTML = monthEntries.map(entry => renderEntry(entry, false)).join('');
+    }
+
+    function renderEntry(entry, archiveMode) {
+        const cfg = APP.blocks[entry.block];
+        const dirLabel = entry.block === 'en' ? 'EN / FR' : 'IT / FR';
+        const hiddenId = `hidden-${entry.id}`;
+        const visibleId = `visible-${entry.id}`;
+        const isRevealed = !!entry.revealed || archiveMode;
+
+        return `
+            <div class="phrase-item fade-in">
+                <div class="phrase-header">
+                    <div>
+                        <div class="phrase-meta">
+                            <span class="month-chip"><i class="bi bi-calendar3"></i> ${escapeHtml(monthLabel(entry.monthKey))}</span>
+                            <span class="ms-2">${escapeHtml(dirLabel)}</span>
+                            <span class="ms-2">• ${escapeHtml(formatDate(entry.createdAt))}</span>
+                        </div>
+                    </div>
+                    <div class="btn-group-wrap">
+                        <button class="btn btn-sm btn-outline-secondary" data-action="toggle" data-id="${entry.id}">
+                            <i class="bi bi-${isRevealed ? 'eye-slash' : 'eye'}"></i>
+                            ${isRevealed ? 'Masquer' : 'Voir'}
+                        </button>
+                        <button class="btn btn-sm btn-outline-primary" data-action="speak" data-text="${escapeJs(entry.sourceText)}" data-lang="${escapeJs(entry.sourceLang)}">
+                            <i class="bi bi-volume-up"></i> Source
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" data-action="speak" data-text="${escapeJs(entry.targetText)}" data-lang="${escapeJs(entry.targetLang)}">
+                            <i class="bi bi-volume-up"></i> Traduction
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" data-action="delete" data-id="${entry.id}">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="phrase-body">
+                    <div class="hidden-row" id="${hiddenId}" style="display:${isRevealed ? 'none' : 'flex'};">
+                        <div class="hidden-text"><i class="bi bi-lock-fill"></i> Données masquées</div>
+                        <button class="btn btn-sm btn-light" data-action="toggle" data-id="${entry.id}">
+                            <i class="bi bi-eye"></i> Afficher
+                        </button>
+                    </div>
+
+                    <div id="${visibleId}" style="display:${isRevealed ? 'block' : 'none'};">
+                        <div class="lang-row">
+                            <strong><i class="bi bi-flag-fill text-primary"></i> ${escapeHtml(cfg.label)} :</strong><br>
+                            <span style="word-break:break-word;">${escapeHtml(entry.sourceText)}</span>
+                        </div>
+                        <div class="lang-row">
+                            <strong><i class="bi bi-flag-fill text-danger"></i> Français :</strong><br>
+                            <span style="word-break:break-word;">${escapeHtml(entry.targetText)}</span>
+                        </div>
+                        <div class="btn-group-wrap mt-2">
+                            <button class="btn btn-sm btn-success" data-action="speak" data-text="${escapeJs(entry.sourceText)}" data-lang="${escapeJs(entry.sourceLang)}">
+                                <i class="bi bi-headphones"></i> Écouter source
+                            </button>
+                            <button class="btn btn-sm btn-info text-white" data-action="speak" data-text="${escapeJs(entry.targetText)}" data-lang="${escapeJs(entry.targetLang)}">
+                                <i class="bi bi-headphones"></i> Écouter français
+                            </button>
+                            <button class="btn btn-sm btn-soft" data-action="toggle" data-id="${entry.id}">
+                                <i class="bi bi-eye-slash"></i> Masquer
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    function toggleEntry(id) {
+        const entry = APP.entries.find(item => String(item.id) === String(id));
+        if (!entry) return;
+        entry.revealed = !entry.revealed;
+        saveEntries();
+        renderAll();
+    }
+
+    function deleteEntry(id) {
+        const entry = APP.entries.find(item => String(item.id) === String(id));
+        if (!entry) return;
+        if (!confirm('Supprimer cette expression ?')) return;
+        APP.entries = APP.entries.filter(item => String(item.id) !== String(id));
+        saveEntries();
+        renderAll();
+        toast('Expression supprimée.', 'info');
+    }
+
+    function clearCurrentMonth(block) {
+        const monthKey = getCurrentMonthKey();
+        const count = getEntries(block, monthKey).length;
+        if (!count) return;
+        if (!confirm(`Supprimer les ${count} expression(s) du mois en cours pour ce bloc ?`)) return;
+        APP.entries = APP.entries.filter(item => !(item.block === block && item.monthKey === monthKey));
+        saveEntries();
+        renderAll();
+        exitListening();
+        toast('Le mois en cours a été vidé pour ce bloc.', 'warning');
+    }
+
+    function startListening(block, direction) {
+        const monthKey = getCurrentMonthKey();
+        const items = getEntries(block, monthKey);
+        if (!items.length) return;
+
+        APP.listening.activeBlock = block;
+        APP.listening.direction = direction;
+        APP.listening.queue = [...items];
+        APP.listening.current = null;
+        APP.listening.revealed = false;
+        shuffleArray(APP.listening.queue);
+
+        const panel = document.getElementById(APP.blocks[block].panel);
+        panel.style.display = 'block';
+        panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+        const badge = document.getElementById(APP.blocks[block].listeningBadge);
+        badge.textContent = `${APP.blocks[block].title} • ${direction === 'forward' ? 'sens direct' : 'sens inverse'}`;
+
+        nextListening();
+    }
+
+    function nextListening() {
+        if (!APP.listening.activeBlock) return;
+
+        if (!APP.listening.queue.length) {
+            finishListening();
+            return;
+        }
+
+        APP.listening.current = APP.listening.queue.shift();
+        APP.listening.revealed = false;
+
+        const cfg = APP.blocks[APP.listening.activeBlock];
+        const text = APP.listening.direction === 'forward'
+            ? APP.listening.current.sourceText
+            : APP.listening.current.targetText;
+        const lang = APP.listening.direction === 'forward'
+            ? APP.listening.current.sourceLang
+            : APP.listening.current.targetLang;
+
+        document.getElementById(cfg.progress).textContent =
+            `Expression ${getCurrentMonthCount(cfg)} • restantes ${APP.listening.queue.length + 1}`;
+
+        hideListeningText();
+        speakText(text, lang);
+        renderListeningButtons();
+    }
+
+    function getCurrentMonthCount(cfg) {
+        const block = cfg === APP.blocks.en ? 'en' : 'it';
+        return getEntries(block).length;
+    }
+
+    function showCurrentListening() {
+        if (!APP.listening.current || APP.listening.revealed) return;
+        APP.listening.revealed = true;
+        renderCurrentListening();
+    }
+
+    function replayCurrentListening() {
+        if (!APP.listening.current) return;
+        const text = APP.listening.direction === 'forward'
+            ? APP.listening.current.sourceText
+            : APP.listening.current.targetText;
+        const lang = APP.listening.direction === 'forward'
+            ? APP.listening.current.sourceLang
+            : APP.listening.current.targetLang;
+        speakText(text, lang);
+    }
+
+    function renderCurrentListening() {
+        if (!APP.listening.activeBlock || !APP.listening.current) return;
+
+        const cfg = APP.blocks[APP.listening.activeBlock];
+        const sourceLabel = APP.listening.direction === 'forward'
+            ? cfg.label
+            : 'Français';
+        const targetLabel = APP.listening.direction === 'forward'
+            ? 'Français'
+            : cfg.label;
+        const sourceText = APP.listening.direction === 'forward'
+            ? APP.listening.current.sourceText
+            : APP.listening.current.targetText;
+        const targetText = APP.listening.direction === 'forward'
+            ? APP.listening.current.targetText
+            : APP.listening.current.sourceText;
+        const targetLang = APP.listening.direction === 'forward'
+            ? APP.listening.current.targetLang
+            : APP.listening.current.sourceLang;
+
+        const box = document.getElementById(cfg.box);
+        box.innerHTML = `
+            <div class="fade-in">
+                <div class="mb-3">
+                    <strong><i class="bi bi-flag-fill text-primary"></i> ${escapeHtml(sourceLabel)} :</strong>
+                    <div class="fs-4 mt-2" style="word-break:break-word;">${escapeHtml(sourceText)}</div>
+                </div>
+                <hr>
+                <div>
+                    <strong><i class="bi bi-flag-fill text-danger"></i> ${escapeHtml(targetLabel)} :</strong>
+                    <div class="fs-4 mt-2" style="word-break:break-word;">${escapeHtml(targetText)}</div>
+                    <button class="btn btn-sm btn-outline-primary mt-2" type="button" onclick="window.__dualAppSpeak('${escapeJs(targetText)}','${escapeJs(targetLang)}')">
+                        <i class="bi bi-volume-up"></i> Écouter la traduction
+                    </button>
+                </div>
+            </div>
+        `;
+        document.getElementById(cfg.progress).textContent =
+            `En cours • ${APP.listening.revealed ? 'révélé' : 'masqué'} • ${APP.listening.queue.length + 1} restant(s)`;
+        renderListeningButtons();
+    }
+
+    function hideListeningText() {
+        if (!APP.listening.activeBlock) return;
+        const cfg = APP.blocks[APP.listening.activeBlock];
+        const box = document.getElementById(cfg.box);
+        box.innerHTML = `
+            <div class="text-center py-4">
+                <div class="spinner-border text-light mb-3" role="status"></div>
+                <div class="fw-bold">Écoute en cours...</div>
+                <div class="muted-white">Appuyez sur “Afficher” pour voir la réponse.</div>
+            </div>
+        `;
+        document.getElementById(cfg.progress).textContent = 'Expression en cours';
+        renderListeningButtons();
+    }
+
+    function finishListening() {
+        const cfg = APP.blocks[APP.listening.activeBlock];
+        const total = getCurrentMonthCount(cfg);
+        const box = document.getElementById(cfg.box);
+        box.innerHTML = `
+            <div class="text-center fade-in">
+                <h3 class="mb-3">🎉 Bravo !</h3>
+                <p class="mb-0">Vous avez terminé les ${total} expression(s) de ce mois.</p>
+            </div>
+        `;
+        document.getElementById(cfg.progress).textContent = 'Terminé';
+        APP.listening.queue = [];
+        renderListeningButtons();
+    }
+
+    function exitListening() {
+        const block = APP.listening.activeBlock;
+        APP.listening.activeBlock = null;
+        APP.listening.direction = null;
+        APP.listening.queue = [];
+        APP.listening.current = null;
+        APP.listening.revealed = false;
+        window.speechSynthesis?.cancel?.();
+
+        if (block) {
+            document.getElementById(APP.blocks[block].panel).style.display = 'none';
+        }
+    }
+
+    function renderListeningButtons() {
+        const block = APP.listening.activeBlock;
+        if (!block) return;
+        const cfg = APP.blocks[block];
+        const enabled = !!APP.listening.current;
+
+        document.getElementById(cfg.show).disabled = !enabled;
+        document.getElementById(cfg.replay).disabled = !enabled;
+        document.getElementById(cfg.next).disabled = !enabled && !APP.listening.queue.length;
+    }
+
+    function renderArchive() {
+        const archive = document.getElementById('archive-list');
+        const months = [...new Set(APP.entries.map(item => item.monthKey))].sort((a, b) => b.localeCompare(a));
+        document.getElementById('archive-summary').textContent = `${months.length} mois`;
+
+        if (!months.length) {
+            archive.innerHTML = `
+                <div class="empty-state">
+                    <i class="bi bi-archive"></i>
+                    <div>Aucune archive pour le moment.</div>
+                </div>
+            `;
+            return;
+        }
+
+        archive.innerHTML = months.map(monthKey => renderArchiveMonth(monthKey)).join('');
+    }
+
+    function renderArchiveMonth(monthKey) {
+        const monthEntries = APP.entries
+            .filter(item => item.monthKey === monthKey)
+            .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+
+        const enEntries = monthEntries.filter(item => item.block === 'en');
+        const itEntries = monthEntries.filter(item => item.block === 'it');
+
+        return `
+            <div class="archive-month fade-in">
+                <div class="archive-head">
+                    <div>
+                        <div class="fw-bold fs-5"><i class="bi bi-calendar3"></i> ${escapeHtml(monthLabel(monthKey))}</div>
+                        <div class="small-help">${monthEntries.length} expression(s) au total • EN: ${enEntries.length} • IT: ${itEntries.length}</div>
+                    </div>
+                    <span class="month-chip"><i class="bi bi-collection"></i> ${monthEntries.length} items</span>
+                </div>
+
+                <div class="archive-grid">
+                    ${renderArchiveSection(monthKey, 'en', enEntries)}
+                    ${renderArchiveSection(monthKey, 'it', itEntries)}
+                </div>
+            </div>
+        `;
+    }
+
+    function renderArchiveSection(monthKey, block, entries) {
+        const bodyId = `archive-body-${monthKey}-${block}`;
+        const count = entries.length;
+        const sourceLabel = block === 'en' ? 'Anglais' : 'Italien';
+
+        return `
+            <div class="archive-subcard">
+                <div class="archive-subhead">
+                    <div>
+                        <div class="archive-subtitle">
+                            <i class="bi bi-folder2-open"></i> ${escapeHtml(sourceLabel)} ↔ Français
+                        </div>
+                        <div class="archive-submeta">${count} expression(s) • ${escapeHtml(monthLabel(monthKey))}</div>
+                    </div>
+                    <div class="archive-subactions">
+                        <button class="btn btn-sm btn-success" data-action="archive-listen" data-month="${escapeJs(monthKey)}" data-block="${escapeJs(block)}" data-direction="forward" ${count ? '' : 'disabled'}>
+                            <i class="bi bi-headphones"></i> ${block === 'en' ? 'EN → FR' : 'IT → FR'}
+                        </button>
+                        <button class="btn btn-sm btn-info text-white" data-action="archive-listen" data-month="${escapeJs(monthKey)}" data-block="${escapeJs(block)}" data-direction="reverse" ${count ? '' : 'disabled'}>
+                            <i class="bi bi-arrow-left-right"></i> FR → ${block === 'en' ? 'EN' : 'IT'}
+                        </button>
+                        <button class="btn btn-sm archive-toggle" data-action="archive-toggle" data-month="${escapeJs(monthKey)}" data-block="${escapeJs(block)}">
+                            <i class="bi bi-table"></i> Voir le tableau
+                        </button>
+                    </div>
+                </div>
+                <div class="archive-subbody" id="${bodyId}">
+                    ${renderArchiveTable(entries, block)}
+                </div>
+            </div>
+        `;
+    }
+
+    function renderArchiveTable(entries, block) {
+        if (!entries.length) {
+            return `
+                <div class="archive-empty-row">
+                    Aucune expression dans ce bloc pour ce mois.
+                </div>
+            `;
+        }
+
+        const sourceLabel = block === 'en' ? 'Anglais' : 'Italien';
+        const rows = entries.map(entry => `
+            <tr>
+                <td>${escapeHtml(formatDate(entry.createdAt))}</td>
+                <td>
+                    <div class="fw-bold mb-1">${escapeHtml(sourceLabel)}</div>
+                    <div style="word-break:break-word;">${escapeHtml(entry.sourceText)}</div>
+                </td>
+                <td>
+                    <div class="fw-bold mb-1">Français</div>
+                    <div style="word-break:break-word;">${escapeHtml(entry.targetText)}</div>
+                </td>
+                <td>
+                    <div class="archive-cell-actions">
+                        <button class="btn btn-sm btn-outline-primary" data-action="speak" data-text="${escapeJs(entry.sourceText)}" data-lang="${escapeJs(entry.sourceLang)}">
+                            <i class="bi bi-volume-up"></i> Source
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" data-action="speak" data-text="${escapeJs(entry.targetText)}" data-lang="${escapeJs(entry.targetLang)}">
+                            <i class="bi bi-volume-up"></i> FR
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `).join('');
+
+        return `
+            <table class="archive-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>${escapeHtml(sourceLabel)}</th>
+                        <th>Français</th>
+                        <th>Audio</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${rows}
+                </tbody>
+            </table>
+        `;
+    }
+
+    function toggleArchiveSection(monthKey, block) {
+        const body = document.getElementById(`archive-body-${monthKey}-${block}`);
+        if (!body) return;
+        body.style.display = body.style.display === 'block' ? 'none' : 'block';
+    }
+
+    function renderListeningVisibility() {
+        ['en', 'it'].forEach(block => {
+            const cfg = APP.blocks[block];
+            const panel = document.getElementById(cfg.panel);
+            if (!panel) return;
+            if (APP.listening.activeBlock !== block) {
+                panel.style.display = 'none';
+            }
+        });
+    }
+
+    function startArchiveListening(monthKey, block, direction) {
+        const items = APP.entries
+            .filter(item => item.monthKey === monthKey && item.block === block)
+            .sort((a, b) => a.createdAt.localeCompare(b.createdAt));
+
+        if (!items.length) return;
+
+        APP.archiveListening = {
+            active: true,
+            monthKey,
+            block,
+            direction,
+            queue: [...items],
+            current: null,
+            revealed: false
+        };
+
+        shuffleArray(APP.archiveListening.queue);
+
+        const panel = document.getElementById('archive-listening-panel');
+        panel.style.display = 'block';
+        panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+        document.getElementById('archive-listening-badge').textContent =
+            `${monthLabel(monthKey)} • ${APP.blocks[block].title} • ${direction === 'forward' ? 'sens direct' : 'sens inverse'}`;
+
+        nextArchiveListening();
+    }
+
+    function nextArchiveListening() {
+        if (!APP.archiveListening?.active) return;
+
+        if (!APP.archiveListening.queue.length) {
+            finishArchiveListening();
+            return;
+        }
+
+        APP.archiveListening.current = APP.archiveListening.queue.shift();
+        APP.archiveListening.revealed = false;
+
+        hideArchiveListeningText();
+
+        const text = APP.archiveListening.direction === 'forward'
+            ? APP.archiveListening.current.sourceText
+            : APP.archiveListening.current.targetText;
+        const lang = APP.archiveListening.direction === 'forward'
+            ? APP.archiveListening.current.sourceLang
+            : APP.archiveListening.current.targetLang;
+
+        speakText(text, lang);
+        renderArchiveListeningButtons();
+        updateArchiveListeningProgress();
+    }
+
+    function showArchiveCurrentListening() {
+        if (!APP.archiveListening?.current || APP.archiveListening.revealed) return;
+        APP.archiveListening.revealed = true;
+        renderArchiveCurrentListening();
+    }
+
+    function replayArchiveCurrentListening() {
+        if (!APP.archiveListening?.current) return;
+        const text = APP.archiveListening.direction === 'forward'
+            ? APP.archiveListening.current.sourceText
+            : APP.archiveListening.current.targetText;
+        const lang = APP.archiveListening.direction === 'forward'
+            ? APP.archiveListening.current.sourceLang
+            : APP.archiveListening.current.targetLang;
+        speakText(text, lang);
+    }
+
+    function renderArchiveCurrentListening() {
+        if (!APP.archiveListening?.current) return;
+
+        const block = APP.archiveListening.block;
+        const cfg = APP.blocks[block];
+        const sourceLabel = APP.archiveListening.direction === 'forward' ? cfg.label : 'Français';
+        const targetLabel = APP.archiveListening.direction === 'forward' ? 'Français' : cfg.label;
+        const sourceText = APP.archiveListening.direction === 'forward'
+            ? APP.archiveListening.current.sourceText
+            : APP.archiveListening.current.targetText;
+        const targetText = APP.archiveListening.direction === 'forward'
+            ? APP.archiveListening.current.targetText
+            : APP.archiveListening.current.sourceText;
+        const targetLang = APP.archiveListening.direction === 'forward'
+            ? APP.archiveListening.current.targetLang
+            : APP.archiveListening.current.sourceLang;
+
+        document.getElementById('archive-listening-box').innerHTML = `
+            <div class="fade-in">
+                <div class="mb-3">
+                    <strong><i class="bi bi-flag-fill text-primary"></i> ${escapeHtml(sourceLabel)} :</strong>
+                    <div class="fs-4 mt-2" style="word-break:break-word;">${escapeHtml(sourceText)}</div>
+                </div>
+                <hr>
+                <div>
+                    <strong><i class="bi bi-flag-fill text-danger"></i> ${escapeHtml(targetLabel)} :</strong>
+                    <div class="fs-4 mt-2" style="word-break:break-word;">${escapeHtml(targetText)}</div>
+                    <button class="btn btn-sm btn-outline-primary mt-2" type="button" onclick="window.__dualAppSpeak('${escapeJs(targetText)}','${escapeJs(targetLang)}')">
+                        <i class="bi bi-volume-up"></i> Écouter la traduction
+                    </button>
+                </div>
+            </div>
+        `;
+
+        updateArchiveListeningProgress();
+        renderArchiveListeningButtons();
+    }
+
+    function hideArchiveListeningText() {
+        document.getElementById('archive-listening-box').innerHTML = `
+            <div class="text-center py-4">
+                <div class="spinner-border text-light mb-3" role="status"></div>
+                <div class="fw-bold">Écoute en cours...</div>
+                <div class="muted-white">Appuyez sur “Afficher” pour voir la réponse.</div>
+            </div>
+        `;
+        updateArchiveListeningProgress();
+        renderArchiveListeningButtons();
+    }
+
+    function finishArchiveListening() {
+        const total = APP.entries.filter(item => item.monthKey === APP.archiveListening.monthKey && item.block === APP.archiveListening.block).length;
+        document.getElementById('archive-listening-box').innerHTML = `
+            <div class="text-center fade-in">
+                <h3 class="mb-3">🎉 Bravo !</h3>
+                <p class="mb-0">Vous avez terminé les ${total} expression(s) de ${monthLabel(APP.archiveListening.monthKey)}.</p>
+            </div>
+        `;
+        document.getElementById('archive-progress').textContent = 'Terminé';
+        APP.archiveListening.queue = [];
+        APP.archiveListening.current = null;
+        APP.archiveListening.revealed = false;
+        renderArchiveListeningButtons();
+    }
+
+    function exitArchiveListening() {
+        APP.archiveListening = null;
+        window.speechSynthesis?.cancel?.();
+        document.getElementById('archive-listening-panel').style.display = 'none';
+    }
+
+    function renderArchiveListeningButtons() {
+        const enabled = !!APP.archiveListening?.current;
+        document.getElementById('archive-show').disabled = !enabled;
+        document.getElementById('archive-replay').disabled = !enabled;
+        document.getElementById('archive-next').disabled = !enabled && !APP.archiveListening?.queue?.length;
+    }
+
+    function updateArchiveListeningProgress() {
+        if (!APP.archiveListening) return;
+        const total = APP.entries.filter(item => item.monthKey === APP.archiveListening.monthKey && item.block === APP.archiveListening.block).length;
+        const remaining = APP.archiveListening.queue.length;
+        const current = total - remaining;
+        const modeText = APP.archiveListening.direction === 'forward'
+            ? (APP.archiveListening.block === 'en' ? 'EN → FR' : 'IT → FR')
+            : `FR → ${APP.archiveListening.block === 'en' ? 'EN' : 'IT'}`;
+        document.getElementById('archive-progress').textContent =
+            `Expression ${current} / ${total} • ${modeText}`;
+    }
+
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+    }
+
+    function speakText(text, lang = 'fr-FR') {
+        if (!('speechSynthesis' in window)) {
+            alert('Votre navigateur ne supporte pas la synthèse vocale.');
+            return;
+        }
+
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = lang;
+        utterance.rate = lang.startsWith('fr') ? 0.95 : 0.92;
+        utterance.pitch = 1;
+        window.speechSynthesis.speak(utterance);
+    }
+
+    window.__dualAppSpeak = speakText;
+
+    function toast(message, type = 'success') {
+        const colors = {
+            success: '#16a34a',
+            info: '#2563eb',
+            warning: '#d97706',
+            danger: '#dc2626'
+        };
+
+        const el = document.createElement('div');
+        el.className = 'toast-mini';
+        el.style.background = colors[type] || colors.success;
+        el.textContent = message;
+        document.body.appendChild(el);
+
+        setTimeout(() => {
+            el.style.transition = 'all .25s ease';
+            el.style.transform = 'translateX(30px)';
+            el.style.opacity = '0';
+            setTimeout(() => el.remove(), 250);
+        }, 2500);
+    }
+})();
+</script>
+</body>
+</html>
