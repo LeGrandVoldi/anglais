@@ -78,7 +78,7 @@
             padding:16px;
         }
         .tabs-wrap{
-            background:rgba(255,255,255,.12);
+            background:rgba(0,0,0,0.3);
             border-radius:18px;
             padding:10px;
             backdrop-filter: blur(10px);
@@ -1248,7 +1248,7 @@
             </div>
         `;
         document.getElementById(cfg.progress).textContent =
-            `En cours • ${APP.listening.revealed ? 'révélé' : 'masqué'} • ${APP.listening.queue.length + 1} restant(s)`;
+            `En cours •`;
         renderListeningButtons();
     }
 
