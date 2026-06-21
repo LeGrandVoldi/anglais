@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+    
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Apprentissage Anglais, Italien, Turc & Roumain ↔ Français</title>
@@ -16,14 +17,12 @@
             --text:#1f2937;
         }
         * { box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
         body{
             min-height:100vh;
             margin:0;
             padding:16px;
             background: linear-gradient(135deg,var(--bg1) 0%,var(--bg2) 100%);
             color:var(--text);
-            overflow-x:hidden;
         }
         .app-shell{
             max-width:1200px;
@@ -333,8 +332,7 @@
             border:1px dashed #e5e7eb;
             border-radius:12px;
         }
-        .archive-listening-panel,
-        .listening-panel{
+        .archive-listening-panel{
             background: linear-gradient(135deg, #0f766e, #22c55e);
             color:#fff;
             border-radius:22px;
@@ -342,10 +340,48 @@
             box-shadow:0 18px 45px rgba(0,0,0,.12);
             min-height:260px;
         }
+        .archive-listening-panel .title{
+            display:flex;
+            justify-content:space-between;
+            gap:10px;
+            flex-wrap:wrap;
+            align-items:center;
+            margin-bottom:10px;
+        }
+        .archive-listening-panel .big-box{
+            background:#fff;
+            color:#111827;
+            border-radius:18px;
+            padding:16px;
+            min-height:130px;
+            box-shadow:0 12px 22px rgba(0,0,0,.12);
+        }
+        .archive-listening-panel .controls{
+            display:flex;
+            gap:8px;
+            flex-wrap:wrap;
+            margin-top:12px;
+        }
+        .month-chip{
+            display:inline-flex;
+            align-items:center;
+            gap:6px;
+            padding:6px 10px;
+            border-radius:999px;
+            background:#ede9fe;
+            color:#5b21b6;
+            font-weight:700;
+            font-size:.85rem;
+        }
         .listening-panel{
+            background: linear-gradient(135deg, #0f766e, #22c55e);
+            color:#fff;
+            border-radius:22px;
+            padding:18px;
+            box-shadow:0 18px 45px rgba(0,0,0,.12);
+            min-height:260px;
             display:none;
         }
-        .archive-listening-panel .title,
         .listening-panel .title{
             display:flex;
             justify-content:space-between;
@@ -354,7 +390,6 @@
             align-items:center;
             margin-bottom:10px;
         }
-        .archive-listening-panel .big-box,
         .listening-panel .big-box{
             background:#fff;
             color:#111827;
@@ -363,7 +398,6 @@
             min-height:130px;
             box-shadow:0 12px 22px rgba(0,0,0,.12);
         }
-        .archive-listening-panel .controls,
         .listening-panel .controls{
             display:flex;
             gap:8px;
@@ -410,9 +444,6 @@
             font-size:.86rem;
             color:#6b7280;
         }
-        .module-anchor{
-            scroll-margin-top: 14px;
-        }
         @media (max-width: 992px){
             .stat-grid{ grid-template-columns:repeat(2, minmax(0, 1fr)); }
         }
@@ -450,12 +481,12 @@
                     </li>
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="tr-tab" data-bs-toggle="pill" data-bs-target="#tr-panel" type="button" role="tab">
-                            <i class="bi bi-geo-alt-fill"></i> Turc ↔ Français
+                            <i class="bi bi-flag"></i> Turc ↔ Français
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="ro-tab" data-bs-toggle="pill" data-bs-target="#ro-panel" type="button" role="tab">
-                            <i class="bi bi-compass"></i> Roumain ↔ Français
+                            <i class="bi bi-flag-fill"></i> Roumain ↔ Français
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
@@ -469,9 +500,379 @@
     </div>
 
     <div class="tab-content" id="mainTabsContent">
-        <div id="dynamic-panels"></div>
+        <div class="tab-pane fade show active" id="en-panel" role="tabpanel" aria-labelledby="en-tab" tabindex="0">
+            <div class="glass-card">
+                <div class="card-top">
+                    <h2><i class="bi bi-journal-plus"></i> Bloc Anglais → Français</h2>
+                    <span class="badge-soft" id="en-month-label">Mois courant</span>
+                </div>
+                <div class="card-body-pad">
+                    <div class="subtle-note mb-3">
+                        Toutes les données ajoutées ici sont rangées automatiquement dans le mois en cours. Quand le mois change, elles passent dans l’archive sans être supprimées.
+                    </div>
 
-        <div class="tab-pane fade module-anchor" id="archive-panel" role="tabpanel" aria-labelledby="archive-tab" tabindex="0">
+                    <div class="stat-grid">
+                        <div class="stat-box">
+                            <div class="label">Phrases ce mois</div>
+                            <div class="value" id="en-count-month">0</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="label">Total anglais</div>
+                            <div class="value" id="en-count-total">0</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="label">Mois disponibles</div>
+                            <div class="value" id="en-months-total">0</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="label">Statut audio</div>
+                            <div class="value"><i class="bi bi-volume-up"></i></div>
+                        </div>
+                    </div>
+
+                    <form id="form-en" class="mb-4">
+                        <div class="mb-3">
+                            <label class="form-label"><i class="bi bi-chat-left-text"></i> Expression en anglais</label>
+                            <input type="text" class="form-control" id="en-source" placeholder="Hello, how are you?" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label"><i class="bi bi-chat-left-quote"></i> Traduction en français</label>
+                            <input type="text" class="form-control" id="en-target" placeholder="Bonjour, comment ça va ?" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="bi bi-save"></i> Enregistrer dans le mois en cours
+                        </button>
+                    </form>
+
+                    <div class="list-toolbar">
+                        <div class="actions">
+                            <button class="btn btn-success" id="en-listen-forward" type="button" disabled>
+                                <i class="bi bi-headphones"></i> EN → FR
+                            </button>
+                            <button class="btn btn-info text-white" id="en-listen-reverse" type="button" disabled>
+                                <i class="bi bi-arrow-left-right"></i> FR → EN
+                            </button>
+                            <button class="btn btn-outline-danger" id="en-clear-month" type="button" disabled>
+                                <i class="bi bi-trash"></i> Supprimer le mois
+                            </button>
+                        </div>
+                        <div class="small-help" id="en-list-help"></div>
+                    </div>
+
+                    <div id="en-list"></div>
+
+                    <div class="listening-panel mt-3" id="en-listening-panel">
+                        <div class="title">
+                            <div>
+                                <div class="badge-soft mb-2" id="en-listening-badge"></div>
+                                <div class="muted-white" id="en-progress">Prêt</div>
+                            </div>
+                            <button class="btn btn-light btn-sm" id="en-exit-listen" type="button">
+                                <i class="bi bi-x-circle"></i> Quitter
+                            </button>
+                        </div>
+                        <div class="big-box" id="en-listening-box">
+                            <div class="text-center text-muted py-4">
+                                <i class="bi bi-soundwave" style="font-size:2rem;"></i>
+                                <div class="mt-2">Cliquez sur un mode d’écoute</div>
+                            </div>
+                        </div>
+                        <div class="controls">
+                            <button class="btn btn-light" id="en-show" type="button">
+                                <i class="bi bi-eye"></i> Afficher
+                            </button>
+                            <button class="btn btn-outline-light" id="en-replay" type="button">
+                                <i class="bi bi-arrow-clockwise"></i> Réécouter
+                            </button>
+                            <button class="btn btn-warning" id="en-next" type="button">
+                                <i class="bi bi-skip-forward"></i> Suivant
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="it-panel" role="tabpanel" aria-labelledby="it-tab" tabindex="0">
+            <div class="glass-card">
+                <div class="card-top">
+                    <h2><i class="bi bi-journal-plus"></i> Bloc Italien → Français</h2>
+                    <span class="badge-soft" id="it-month-label">Mois courant</span>
+                </div>
+                <div class="card-body-pad">
+                    <div class="subtle-note mb-3">
+                        Ici, vous enregistrez vos expressions italiennes et leurs traductions françaises. Le classement mensuel fonctionne exactement comme dans le bloc anglais.
+                    </div>
+
+                    <div class="stat-grid">
+                        <div class="stat-box">
+                            <div class="label">Phrases ce mois</div>
+                            <div class="value" id="it-count-month">0</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="label">Total italien</div>
+                            <div class="value" id="it-count-total">0</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="label">Mois disponibles</div>
+                            <div class="value" id="it-months-total">0</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="label">Statut audio</div>
+                            <div class="value"><i class="bi bi-volume-up"></i></div>
+                        </div>
+                    </div>
+
+                    <form id="form-it" class="mb-4">
+                        <div class="mb-3">
+                            <label class="form-label"><i class="bi bi-chat-left-text"></i> Expression en italien</label>
+                            <input type="text" class="form-control" id="it-source" placeholder="Come stai?" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label"><i class="bi bi-chat-left-quote"></i> Traduction en français</label>
+                            <input type="text" class="form-control" id="it-target" placeholder="Comment ça va ?" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="bi bi-save"></i> Enregistrer dans le mois en cours
+                        </button>
+                    </form>
+
+                    <div class="list-toolbar">
+                        <div class="actions">
+                            <button class="btn btn-success" id="it-listen-forward" type="button" disabled>
+                                <i class="bi bi-headphones"></i> IT → FR
+                            </button>
+                            <button class="btn btn-info text-white" id="it-listen-reverse" type="button" disabled>
+                                <i class="bi bi-arrow-left-right"></i> FR → IT
+                            </button>
+                            <button class="btn btn-outline-danger" id="it-clear-month" type="button" disabled>
+                                <i class="bi bi-trash"></i> Supprimer le mois
+                            </button>
+                        </div>
+                        <div class="small-help" id="it-list-help"></div>
+                    </div>
+
+                    <div id="it-list"></div>
+
+                    <div class="listening-panel mt-3" id="it-listening-panel">
+                        <div class="title">
+                            <div>
+                                <div class="badge-soft mb-2" id="it-listening-badge"></div>
+                                <div class="muted-white" id="it-progress">Prêt</div>
+                            </div>
+                            <button class="btn btn-light btn-sm" id="it-exit-listen" type="button">
+                                <i class="bi bi-x-circle"></i> Quitter
+                            </button>
+                        </div>
+                        <div class="big-box" id="it-listening-box">
+                            <div class="text-center text-muted py-4">
+                                <i class="bi bi-soundwave" style="font-size:2rem;"></i>
+                                <div class="mt-2">Cliquez sur un mode d’écoute</div>
+                            </div>
+                        </div>
+                        <div class="controls">
+                            <button class="btn btn-light" id="it-show" type="button">
+                                <i class="bi bi-eye"></i> Afficher
+                            </button>
+                            <button class="btn btn-outline-light" id="it-replay" type="button">
+                                <i class="bi bi-arrow-clockwise"></i> Réécouter
+                            </button>
+                            <button class="btn btn-warning" id="it-next" type="button">
+                                <i class="bi bi-skip-forward"></i> Suivant
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="tr-panel" role="tabpanel" aria-labelledby="tr-tab" tabindex="0">
+            <div class="glass-card">
+                <div class="card-top">
+                    <h2><i class="bi bi-journal-plus"></i> Bloc Turc → Français</h2>
+                    <span class="badge-soft" id="tr-month-label">Mois courant</span>
+                </div>
+                <div class="card-body-pad">
+                    <div class="subtle-note mb-3">
+                        Ici, vous enregistrez vos expressions turques et leurs traductions françaises. L’audio utilise une voix turque native pour un accent authentique.
+                    </div>
+
+                    <div class="stat-grid">
+                        <div class="stat-box">
+                            <div class="label">Phrases ce mois</div>
+                            <div class="value" id="tr-count-month">0</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="label">Total turc</div>
+                            <div class="value" id="tr-count-total">0</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="label">Mois disponibles</div>
+                            <div class="value" id="tr-months-total">0</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="label">Statut audio</div>
+                            <div class="value"><i class="bi bi-volume-up"></i></div>
+                        </div>
+                    </div>
+
+                    <form id="form-tr" class="mb-4">
+                        <div class="mb-3">
+                            <label class="form-label"><i class="bi bi-chat-left-text"></i> Expression en turc</label>
+                            <input type="text" class="form-control" id="tr-source" placeholder="Merhaba, nasılsın?" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label"><i class="bi bi-chat-left-quote"></i> Traduction en français</label>
+                            <input type="text" class="form-control" id="tr-target" placeholder="Bonjour, comment vas-tu ?" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="bi bi-save"></i> Enregistrer dans le mois en cours
+                        </button>
+                    </form>
+
+                    <div class="list-toolbar">
+                        <div class="actions">
+                            <button class="btn btn-success" id="tr-listen-forward" type="button" disabled>
+                                <i class="bi bi-headphones"></i> TR → FR
+                            </button>
+                            <button class="btn btn-info text-white" id="tr-listen-reverse" type="button" disabled>
+                                <i class="bi bi-arrow-left-right"></i> FR → TR
+                            </button>
+                            <button class="btn btn-outline-danger" id="tr-clear-month" type="button" disabled>
+                                <i class="bi bi-trash"></i> Supprimer le mois
+                            </button>
+                        </div>
+                        <div class="small-help" id="tr-list-help"></div>
+                    </div>
+
+                    <div id="tr-list"></div>
+
+                    <div class="listening-panel mt-3" id="tr-listening-panel">
+                        <div class="title">
+                            <div>
+                                <div class="badge-soft mb-2" id="tr-listening-badge"></div>
+                                <div class="muted-white" id="tr-progress">Prêt</div>
+                            </div>
+                            <button class="btn btn-light btn-sm" id="tr-exit-listen" type="button">
+                                <i class="bi bi-x-circle"></i> Quitter
+                            </button>
+                        </div>
+                        <div class="big-box" id="tr-listening-box">
+                            <div class="text-center text-muted py-4">
+                                <i class="bi bi-soundwave" style="font-size:2rem;"></i>
+                                <div class="mt-2">Cliquez sur un mode d’écoute</div>
+                            </div>
+                        </div>
+                        <div class="controls">
+                            <button class="btn btn-light" id="tr-show" type="button">
+                                <i class="bi bi-eye"></i> Afficher
+                            </button>
+                            <button class="btn btn-outline-light" id="tr-replay" type="button">
+                                <i class="bi bi-arrow-clockwise"></i> Réécouter
+                            </button>
+                            <button class="btn btn-warning" id="tr-next" type="button">
+                                <i class="bi bi-skip-forward"></i> Suivant
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="ro-panel" role="tabpanel" aria-labelledby="ro-tab" tabindex="0">
+            <div class="glass-card">
+                <div class="card-top">
+                    <h2><i class="bi bi-journal-plus"></i> Bloc Roumain → Français</h2>
+                    <span class="badge-soft" id="ro-month-label">Mois courant</span>
+                </div>
+                <div class="card-body-pad">
+                    <div class="subtle-note mb-3">
+                        Ici, vous enregistrez vos expressions roumaines et leurs traductions françaises. L’audio utilise une voix roumaine native pour un accent authentique.
+                    </div>
+
+                    <div class="stat-grid">
+                        <div class="stat-box">
+                            <div class="label">Phrases ce mois</div>
+                            <div class="value" id="ro-count-month">0</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="label">Total roumain</div>
+                            <div class="value" id="ro-count-total">0</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="label">Mois disponibles</div>
+                            <div class="value" id="ro-months-total">0</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="label">Statut audio</div>
+                            <div class="value"><i class="bi bi-volume-up"></i></div>
+                        </div>
+                    </div>
+
+                    <form id="form-ro" class="mb-4">
+                        <div class="mb-3">
+                            <label class="form-label"><i class="bi bi-chat-left-text"></i> Expression en roumain</label>
+                            <input type="text" class="form-control" id="ro-source" placeholder="Bună, ce mai faci?" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label"><i class="bi bi-chat-left-quote"></i> Traduction en français</label>
+                            <input type="text" class="form-control" id="ro-target" placeholder="Bonjour, comment vas-tu ?" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="bi bi-save"></i> Enregistrer dans le mois en cours
+                        </button>
+                    </form>
+
+                    <div class="list-toolbar">
+                        <div class="actions">
+                            <button class="btn btn-success" id="ro-listen-forward" type="button" disabled>
+                                <i class="bi bi-headphones"></i> RO → FR
+                            </button>
+                            <button class="btn btn-info text-white" id="ro-listen-reverse" type="button" disabled>
+                                <i class="bi bi-arrow-left-right"></i> FR → RO
+                            </button>
+                            <button class="btn btn-outline-danger" id="ro-clear-month" type="button" disabled>
+                                <i class="bi bi-trash"></i> Supprimer le mois
+                            </button>
+                        </div>
+                        <div class="small-help" id="ro-list-help"></div>
+                    </div>
+
+                    <div id="ro-list"></div>
+
+                    <div class="listening-panel mt-3" id="ro-listening-panel">
+                        <div class="title">
+                            <div>
+                                <div class="badge-soft mb-2" id="ro-listening-badge"></div>
+                                <div class="muted-white" id="ro-progress">Prêt</div>
+                            </div>
+                            <button class="btn btn-light btn-sm" id="ro-exit-listen" type="button">
+                                <i class="bi bi-x-circle"></i> Quitter
+                            </button>
+                        </div>
+                        <div class="big-box" id="ro-listening-box">
+                            <div class="text-center text-muted py-4">
+                                <i class="bi bi-soundwave" style="font-size:2rem;"></i>
+                                <div class="mt-2">Cliquez sur un mode d’écoute</div>
+                            </div>
+                        </div>
+                        <div class="controls">
+                            <button class="btn btn-light" id="ro-show" type="button">
+                                <i class="bi bi-eye"></i> Afficher
+                            </button>
+                            <button class="btn btn-outline-light" id="ro-replay" type="button">
+                                <i class="bi bi-arrow-clockwise"></i> Réécouter
+                            </button>
+                            <button class="btn btn-warning" id="ro-next" type="button">
+                                <i class="bi bi-skip-forward"></i> Suivant
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="archive-panel" role="tabpanel" aria-labelledby="archive-tab" tabindex="0">
             <div class="glass-card">
                 <div class="card-top">
                     <h2><i class="bi bi-archive"></i> Archive mensuelle</h2>
@@ -521,126 +922,63 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 (() => {
-    const STORAGE_KEY = 'dual_language_monthly_v4';
+    const STORAGE_KEY = 'dual_language_monthly_v2';
     const LEGACY_KEY = 'language_phrases';
+
+    const BLOCKS_CONFIG = {
+        en: {
+            label: 'Anglais',
+            title: 'Anglais → Français',
+            sourceLang: 'en-US',
+            targetLang: 'fr-FR',
+            sourcePlaceholder: 'Hello, how are you?',
+            targetPlaceholder: 'Bonjour, comment ça va ?',
+            dirLabel: 'EN / FR',
+            forwardLabel: 'EN → FR',
+            reverseLabel: 'FR → EN',
+            successMsg: 'Expression anglaise enregistrée.'
+        },
+        it: {
+            label: 'Italien',
+            title: 'Italien → Français',
+            sourceLang: 'it-IT',
+            targetLang: 'fr-FR',
+            sourcePlaceholder: 'Come stai?',
+            targetPlaceholder: 'Comment ça va ?',
+            dirLabel: 'IT / FR',
+            forwardLabel: 'IT → FR',
+            reverseLabel: 'FR → IT',
+            successMsg: 'Expression italienne enregistrée.'
+        },
+        tr: {
+            label: 'Turc',
+            title: 'Turc → Français',
+            sourceLang: 'tr-TR',
+            targetLang: 'fr-FR',
+            sourcePlaceholder: 'Merhaba, nasılsın?',
+            targetPlaceholder: 'Bonjour, comment vas-tu ?',
+            dirLabel: 'TR / FR',
+            forwardLabel: 'TR → FR',
+            reverseLabel: 'FR → TR',
+            successMsg: 'Expression turque enregistrée.'
+        },
+        ro: {
+            label: 'Roumain',
+            title: 'Roumain → Français',
+            sourceLang: 'ro-RO',
+            targetLang: 'fr-FR',
+            sourcePlaceholder: 'Bună, ce mai faci?',
+            targetPlaceholder: 'Bonjour, comment vas-tu ?',
+            dirLabel: 'RO / FR',
+            forwardLabel: 'RO → FR',
+            reverseLabel: 'FR → RO',
+            successMsg: 'Expression roumaine enregistrée.'
+        }
+    };
 
     const APP = {
         entries: [],
-        blockOrder: ['en', 'it', 'tr', 'ro'],
-        blocks: {
-            en: {
-                label: 'Anglais',
-                title: 'Anglais → Français',
-                sourceLang: 'en-US',
-                targetLang: 'fr-FR',
-                sourcePlaceholder: 'Hello, how are you?',
-                targetPlaceholder: 'Bonjour, comment ça va ?',
-                form: 'form-en',
-                sourceInput: 'en-source',
-                targetInput: 'en-target',
-                list: 'en-list',
-                monthLabel: 'en-month-label',
-                countMonth: 'en-count-month',
-                countTotal: 'en-count-total',
-                monthsTotal: 'en-months-total',
-                listHelp: 'en-list-help',
-                listenForward: 'en-listen-forward',
-                listenReverse: 'en-listen-reverse',
-                clearMonth: 'en-clear-month',
-                panel: 'en-listening-panel',
-                listeningBadge: 'en-listening-badge',
-                progress: 'en-progress',
-                box: 'en-listening-box',
-                show: 'en-show',
-                replay: 'en-replay',
-                next: 'en-next',
-                exit: 'en-exit-listen'
-            },
-            it: {
-                label: 'Italien',
-                title: 'Italien → Français',
-                sourceLang: 'it-IT',
-                targetLang: 'fr-FR',
-                sourcePlaceholder: 'Come stai?',
-                targetPlaceholder: 'Comment ça va ?',
-                form: 'form-it',
-                sourceInput: 'it-source',
-                targetInput: 'it-target',
-                list: 'it-list',
-                monthLabel: 'it-month-label',
-                countMonth: 'it-count-month',
-                countTotal: 'it-count-total',
-                monthsTotal: 'it-months-total',
-                listHelp: 'it-list-help',
-                listenForward: 'it-listen-forward',
-                listenReverse: 'it-listen-reverse',
-                clearMonth: 'it-clear-month',
-                panel: 'it-listening-panel',
-                listeningBadge: 'it-listening-badge',
-                progress: 'it-progress',
-                box: 'it-listening-box',
-                show: 'it-show',
-                replay: 'it-replay',
-                next: 'it-next',
-                exit: 'it-exit-listen'
-            },
-            tr: {
-                label: 'Turc',
-                title: 'Turc → Français',
-                sourceLang: 'tr-TR',
-                targetLang: 'fr-FR',
-                sourcePlaceholder: 'Nasılsın?',
-                targetPlaceholder: 'Comment ça va ?',
-                form: 'form-tr',
-                sourceInput: 'tr-source',
-                targetInput: 'tr-target',
-                list: 'tr-list',
-                monthLabel: 'tr-month-label',
-                countMonth: 'tr-count-month',
-                countTotal: 'tr-count-total',
-                monthsTotal: 'tr-months-total',
-                listHelp: 'tr-list-help',
-                listenForward: 'tr-listen-forward',
-                listenReverse: 'tr-listen-reverse',
-                clearMonth: 'tr-clear-month',
-                panel: 'tr-listening-panel',
-                listeningBadge: 'tr-listening-badge',
-                progress: 'tr-progress',
-                box: 'tr-listening-box',
-                show: 'tr-show',
-                replay: 'tr-replay',
-                next: 'tr-next',
-                exit: 'tr-exit-listen'
-            },
-            ro: {
-                label: 'Roumain',
-                title: 'Roumain → Français',
-                sourceLang: 'ro-RO',
-                targetLang: 'fr-FR',
-                sourcePlaceholder: 'Ce mai faci?',
-                targetPlaceholder: 'Comment ça va ?',
-                form: 'form-ro',
-                sourceInput: 'ro-source',
-                targetInput: 'ro-target',
-                list: 'ro-list',
-                monthLabel: 'ro-month-label',
-                countMonth: 'ro-count-month',
-                countTotal: 'ro-count-total',
-                monthsTotal: 'ro-months-total',
-                listHelp: 'ro-list-help',
-                listenForward: 'ro-listen-forward',
-                listenReverse: 'ro-listen-reverse',
-                clearMonth: 'ro-clear-month',
-                panel: 'ro-listening-panel',
-                listeningBadge: 'ro-listening-badge',
-                progress: 'ro-progress',
-                box: 'ro-listening-box',
-                show: 'ro-show',
-                replay: 'ro-replay',
-                next: 'ro-next',
-                exit: 'ro-exit-listen'
-            }
-        },
+        blocks: {},
         listening: {
             activeBlock: null,
             direction: null,
@@ -657,141 +995,88 @@
             current: null,
             revealed: false
         },
-        voices: []
+        voicesCache: [],
+        voicesReady: false
     };
 
+    Object.keys(BLOCKS_CONFIG).forEach(block => {
+        const cfg = BLOCKS_CONFIG[block];
+        const prefix = block;
+        APP.blocks[block] = {
+            ...cfg,
+            form: `form-${prefix}`,
+            sourceInput: `${prefix}-source`,
+            targetInput: `${prefix}-target`,
+            list: `${prefix}-list`,
+            monthLabel: `${prefix}-month-label`,
+            countMonth: `${prefix}-count-month`,
+            countTotal: `${prefix}-count-total`,
+            monthsTotal: `${prefix}-months-total`,
+            listHelp: `${prefix}-list-help`,
+            listenForward: `${prefix}-listen-forward`,
+            listenReverse: `${prefix}-listen-reverse`,
+            clearMonth: `${prefix}-clear-month`,
+            panel: `${prefix}-listening-panel`,
+            listeningBadge: `${prefix}-listening-badge`,
+            progress: `${prefix}-progress`,
+            box: `${prefix}-listening-box`,
+            show: `${prefix}-show`,
+            replay: `${prefix}-replay`,
+            next: `${prefix}-next`,
+            exit: `${prefix}-exit-listen`
+        };
+    });
+
+    const BLOCK_KEYS = Object.keys(APP.blocks);
+
     document.addEventListener('DOMContentLoaded', () => {
-        injectPanels();
-        setupVoices();
+        loadVoices();
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.onvoiceschanged = loadVoices;
+        }
         loadEntries();
         wireEvents();
         renderAll();
-        scrollActiveTabToView('#en-panel');
     });
 
-    function setupVoices() {
+    function loadVoices() {
         if (!('speechSynthesis' in window)) return;
-        const refresh = () => {
-            APP.voices = window.speechSynthesis.getVoices() || [];
-        };
-        refresh();
-        window.speechSynthesis.onvoiceschanged = refresh;
+        APP.voicesCache = window.speechSynthesis.getVoices() || [];
+        APP.voicesReady = APP.voicesCache.length > 0;
     }
 
-    function injectPanels() {
-        const root = document.getElementById('dynamic-panels');
-        root.innerHTML = APP.blockOrder.map(block => createBlockPanel(block)).join('');
-    }
+    function findBestVoice(lang) {
+        if (!APP.voicesReady) {
+            loadVoices();
+        }
+        const voices = APP.voicesCache;
+        if (!voices.length) return null;
 
-    function createBlockPanel(block) {
-        const cfg = APP.blocks[block];
-        return `
-        <div class="tab-pane fade ${block === 'en' ? 'show active' : ''} module-anchor" id="${block}-panel" role="tabpanel" aria-labelledby="${block}-tab" tabindex="0">
-            <div class="glass-card">
-                <div class="card-top">
-                    <h2><i class="bi bi-journal-plus"></i> Bloc ${cfg.title}</h2>
-                    <span class="badge-soft" id="${cfg.monthLabel}">Mois courant</span>
-                </div>
-                <div class="card-body-pad">
-                    <div class="subtle-note mb-3">
-                        Toutes les données ajoutées ici sont rangées automatiquement dans le mois en cours. Quand le mois change, elles passent dans l’archive sans être supprimées.
-                    </div>
+        const langLower = (lang || '').toLowerCase();
+        const baseLang = langLower.split('-')[0];
 
-                    <div class="stat-grid">
-                        <div class="stat-box">
-                            <div class="label">Phrases ce mois</div>
-                            <div class="value" id="${cfg.countMonth}">0</div>
-                        </div>
-                        <div class="stat-box">
-                            <div class="label">Total ${cfg.label.toLowerCase()}</div>
-                            <div class="value" id="${cfg.countTotal}">0</div>
-                        </div>
-                        <div class="stat-box">
-                            <div class="label">Mois disponibles</div>
-                            <div class="value" id="${cfg.monthsTotal}">0</div>
-                        </div>
-                        <div class="stat-box">
-                            <div class="label">Statut audio</div>
-                            <div class="value"><i class="bi bi-volume-up"></i></div>
-                        </div>
-                    </div>
+        let exact = voices.filter(v => (v.lang || '').toLowerCase() === langLower);
+        if (exact.length) return exact[0];
 
-                    <form id="${cfg.form}" class="mb-4">
-                        <div class="mb-3">
-                            <label class="form-label"><i class="bi bi-chat-left-text"></i> Expression en ${cfg.label.toLowerCase()}</label>
-                            <input type="text" class="form-control" id="${cfg.sourceInput}" placeholder="${escapeHtmlAttr(cfg.sourcePlaceholder)}" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label"><i class="bi bi-chat-left-quote"></i> Traduction en français</label>
-                            <input type="text" class="form-control" id="${cfg.targetInput}" placeholder="${escapeHtmlAttr(cfg.targetPlaceholder)}" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary w-100">
-                            <i class="bi bi-save"></i> Enregistrer dans le mois en cours
-                        </button>
-                    </form>
+        let sameBase = voices.filter(v => (v.lang || '').toLowerCase().startsWith(baseLang + '-'));
+        if (sameBase.length) return sameBase[0];
 
-                    <div class="list-toolbar">
-                        <div class="actions">
-                            <button class="btn btn-success" id="${cfg.listenForward}" type="button" disabled>
-                                <i class="bi bi-headphones"></i> ${block.toUpperCase()} → FR
-                            </button>
-                            <button class="btn btn-info text-white" id="${cfg.listenReverse}" type="button" disabled>
-                                <i class="bi bi-arrow-left-right"></i> FR → ${block.toUpperCase()}
-                            </button>
-                            <button class="btn btn-outline-danger" id="${cfg.clearMonth}" type="button" disabled>
-                                <i class="bi bi-trash"></i> Supprimer le mois
-                            </button>
-                        </div>
-                        <div class="small-help" id="${cfg.listHelp}"></div>
-                    </div>
+        let anyBase = voices.filter(v => (v.lang || '').toLowerCase().startsWith(baseLang));
+        if (anyBase.length) return anyBase[0];
 
-                    <div id="${cfg.list}"></div>
-
-                    <div class="listening-panel mt-3" id="${cfg.panel}">
-                        <div class="title">
-                            <div>
-                                <div class="badge-soft mb-2" id="${cfg.listeningBadge}"></div>
-                                <div class="muted-white" id="${cfg.progress}">Prêt</div>
-                            </div>
-                            <button class="btn btn-light btn-sm" id="${cfg.exit}" type="button">
-                                <i class="bi bi-x-circle"></i> Quitter
-                            </button>
-                        </div>
-                        <div class="big-box" id="${cfg.box}">
-                            <div class="text-center text-muted py-4">
-                                <i class="bi bi-soundwave" style="font-size:2rem;"></i>
-                                <div class="mt-2">Cliquez sur un mode d’écoute</div>
-                            </div>
-                        </div>
-                        <div class="controls">
-                            <button class="btn btn-light" id="${cfg.show}" type="button">
-                                <i class="bi bi-eye"></i> Afficher
-                            </button>
-                            <button class="btn btn-outline-light" id="${cfg.replay}" type="button">
-                                <i class="bi bi-arrow-clockwise"></i> Réécouter
-                            </button>
-                            <button class="btn btn-warning" id="${cfg.next}" type="button">
-                                <i class="bi bi-skip-forward"></i> Suivant
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        `;
+        return null;
     }
 
     function wireEvents() {
-        APP.blockOrder.forEach(block => {
-            const cfg = APP.blocks[block];
-            document.getElementById(cfg.form).addEventListener('submit', (e) => addEntry(e, block));
-            document.getElementById(cfg.listenForward).addEventListener('click', () => startListening(block, 'forward'));
-            document.getElementById(cfg.listenReverse).addEventListener('click', () => startListening(block, 'reverse'));
-            document.getElementById(cfg.clearMonth).addEventListener('click', () => clearCurrentMonth(block));
-            document.getElementById(cfg.show).addEventListener('click', showCurrentListening);
-            document.getElementById(cfg.replay).addEventListener('click', replayCurrentListening);
-            document.getElementById(cfg.next).addEventListener('click', nextListening);
-            document.getElementById(cfg.exit).addEventListener('click', exitListening);
+        BLOCK_KEYS.forEach(block => {
+            document.getElementById(`form-${block}`).addEventListener('submit', (e) => addEntry(e, block));
+            document.getElementById(`${block}-listen-forward`).addEventListener('click', () => startListening(block, 'forward'));
+            document.getElementById(`${block}-listen-reverse`).addEventListener('click', () => startListening(block, 'reverse'));
+            document.getElementById(`${block}-clear-month`).addEventListener('click', () => clearCurrentMonth(block));
+            document.getElementById(`${block}-show`).addEventListener('click', showCurrentListening);
+            document.getElementById(`${block}-replay`).addEventListener('click', replayCurrentListening);
+            document.getElementById(`${block}-next`).addEventListener('click', nextListening);
+            document.getElementById(`${block}-exit-listen`).addEventListener('click', exitListening);
         });
 
         document.getElementById('archive-show').addEventListener('click', showArchiveCurrentListening);
@@ -800,21 +1085,6 @@
         document.getElementById('archive-exit-listen').addEventListener('click', exitArchiveListening);
 
         document.addEventListener('click', handleGlobalClicks);
-
-        document.querySelectorAll('[data-bs-toggle="pill"]').forEach(btn => {
-            btn.addEventListener('shown.bs.tab', (e) => {
-                const target = e.target.getAttribute('data-bs-target');
-                if (target) scrollActiveTabToView(target);
-            });
-        });
-    }
-
-    function scrollActiveTabToView(targetSelector) {
-        const el = document.querySelector(targetSelector);
-        if (!el) return;
-        setTimeout(() => {
-            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }, 80);
     }
 
     function handleGlobalClicks(e) {
@@ -878,14 +1148,15 @@
     function normalizeEntries() {
         APP.entries = (APP.entries || []).map(item => {
             const createdAt = item.createdAt || new Date().toISOString();
-            const block = APP.blocks[item.block] ? item.block : 'en';
+            const block = BLOCK_KEYS.includes(item.block) ? item.block : 'en';
+            const cfg = BLOCKS_CONFIG[block];
             return {
                 id: item.id || Date.now() + Math.random(),
                 block,
                 sourceText: item.sourceText || item.english || '',
                 targetText: item.targetText || item.french || '',
-                sourceLang: item.sourceLang || APP.blocks[block].sourceLang,
-                targetLang: item.targetLang || 'fr-FR',
+                sourceLang: item.sourceLang || cfg.sourceLang,
+                targetLang: item.targetLang || cfg.targetLang,
                 createdAt,
                 monthKey: item.monthKey || createdAt.slice(0, 7),
                 revealed: Boolean(item.revealed)
@@ -916,15 +1187,6 @@
         return div.innerHTML;
     }
 
-    function escapeHtmlAttr(text) {
-        return String(text ?? '')
-            .replace(/&/g, '&amp;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#39;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;');
-    }
-
     function escapeJs(text) {
         return String(text ?? '')
             .replace(/\\/g, '\\\\')
@@ -952,6 +1214,7 @@
         const cfg = APP.blocks[block];
         const source = document.getElementById(cfg.sourceInput).value.trim();
         const target = document.getElementById(cfg.targetInput).value.trim();
+
         if (!source || !target) return;
 
         const now = new Date().toISOString();
@@ -970,8 +1233,7 @@
         saveEntries();
         document.getElementById(cfg.form).reset();
         renderAll();
-        toast(`${cfg.label} enregistré(e).`, 'success');
-        scrollActiveTabToView(`#${block}-panel`);
+        toast(cfg.successMsg, 'success');
     }
 
     function getEntries(block, monthKey = getCurrentMonthKey()) {
@@ -984,7 +1246,7 @@
     }
 
     function renderAll() {
-        APP.blockOrder.forEach(block => renderBlock(block));
+        BLOCK_KEYS.forEach(block => renderBlock(block));
         renderArchive();
         renderListeningVisibility();
     }
@@ -1025,7 +1287,7 @@
 
     function renderEntry(entry, archiveMode) {
         const cfg = APP.blocks[entry.block];
-        const dirLabel = `${cfg.label} / FR`;
+        const dirLabel = cfg.dirLabel;
         const hiddenId = `hidden-${entry.id}`;
         const visibleId = `visible-${entry.id}`;
         const isRevealed = !!entry.revealed || archiveMode;
@@ -1117,7 +1379,7 @@
         APP.entries = APP.entries.filter(item => !(item.block === block && item.monthKey === monthKey));
         saveEntries();
         renderAll();
-        exitListening();
+        if (APP.listening.activeBlock === block) exitListening();
         toast('Le mois en cours a été vidé pour ce bloc.', 'warning');
     }
 
@@ -1163,11 +1425,16 @@
             : APP.listening.current.targetLang;
 
         document.getElementById(cfg.progress).textContent =
-            `Expression en cours • restantes ${APP.listening.queue.length + 1}`;
+            `Expression ${getCurrentMonthCount(cfg)} • restantes ${APP.listening.queue.length + 1}`;
 
         hideListeningText();
         speakText(text, lang);
         renderListeningButtons();
+    }
+
+    function getCurrentMonthCount(cfg) {
+        const block = Object.keys(APP.blocks).find(k => APP.blocks[k] === cfg);
+        return getEntries(block).length;
     }
 
     function showCurrentListening() {
@@ -1224,7 +1491,8 @@
                 </div>
             </div>
         `;
-        document.getElementById(cfg.progress).textContent = 'En cours';
+        document.getElementById(cfg.progress).textContent =
+            `En cours •`;
         renderListeningButtons();
     }
 
@@ -1245,7 +1513,7 @@
 
     function finishListening() {
         const cfg = APP.blocks[APP.listening.activeBlock];
-        const total = getEntries(APP.listening.activeBlock).length;
+        const total = getCurrentMonthCount(cfg);
         const box = document.getElementById(cfg.box);
         box.innerHTML = `
             <div class="text-center fade-in">
@@ -1306,21 +1574,23 @@
             .filter(item => item.monthKey === monthKey)
             .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
 
+        const counts = BLOCK_KEYS.map(block => {
+            const count = monthEntries.filter(item => item.block === block).length;
+            return `${block.toUpperCase()}: ${count}`;
+        }).join(' • ');
+
         return `
             <div class="archive-month fade-in">
                 <div class="archive-head">
                     <div>
                         <div class="fw-bold fs-5"><i class="bi bi-calendar3"></i> ${escapeHtml(monthLabel(monthKey))}</div>
-                        <div class="small-help">${monthEntries.length} expression(s) au total</div>
+                        <div class="small-help">${monthEntries.length} expression(s) au total • ${counts}</div>
                     </div>
                     <span class="month-chip"><i class="bi bi-collection"></i> ${monthEntries.length} items</span>
                 </div>
 
                 <div class="archive-grid">
-                    ${APP.blockOrder.map(block => {
-                        const entries = monthEntries.filter(item => item.block === block);
-                        return renderArchiveSection(monthKey, block, entries);
-                    }).join('')}
+                    ${BLOCK_KEYS.map(block => renderArchiveSection(monthKey, block, monthEntries.filter(item => item.block === block))).join('')}
                 </div>
             </div>
         `;
@@ -1330,6 +1600,8 @@
         const bodyId = `archive-body-${monthKey}-${block}`;
         const count = entries.length;
         const sourceLabel = APP.blocks[block].label;
+        const fwdLabel = APP.blocks[block].forwardLabel;
+        const revLabel = APP.blocks[block].reverseLabel;
 
         return `
             <div class="archive-subcard">
@@ -1342,10 +1614,10 @@
                     </div>
                     <div class="archive-subactions">
                         <button class="btn btn-sm btn-success" data-action="archive-listen" data-month="${escapeJs(monthKey)}" data-block="${escapeJs(block)}" data-direction="forward" ${count ? '' : 'disabled'}>
-                            <i class="bi bi-headphones"></i> ${block.toUpperCase()} → FR
+                            <i class="bi bi-headphones"></i> ${fwdLabel}
                         </button>
                         <button class="btn btn-sm btn-info text-white" data-action="archive-listen" data-month="${escapeJs(monthKey)}" data-block="${escapeJs(block)}" data-direction="reverse" ${count ? '' : 'disabled'}>
-                            <i class="bi bi-arrow-left-right"></i> FR → ${block.toUpperCase()}
+                            <i class="bi bi-arrow-left-right"></i> ${revLabel}
                         </button>
                         <button class="btn btn-sm archive-toggle" data-action="archive-toggle" data-month="${escapeJs(monthKey)}" data-block="${escapeJs(block)}">
                             <i class="bi bi-table"></i> Voir le tableau
@@ -1417,7 +1689,7 @@
     }
 
     function renderListeningVisibility() {
-        APP.blockOrder.forEach(block => {
+        BLOCK_KEYS.forEach(block => {
             const cfg = APP.blocks[block];
             const panel = document.getElementById(cfg.panel);
             if (!panel) return;
@@ -1582,8 +1854,8 @@
         const remaining = APP.archiveListening.queue.length;
         const current = total - remaining;
         const modeText = APP.archiveListening.direction === 'forward'
-            ? `${APP.archiveListening.block.toUpperCase()} → FR`
-            : `FR → ${APP.archiveListening.block.toUpperCase()}`;
+            ? APP.blocks[APP.archiveListening.block].forwardLabel
+            : APP.blocks[APP.archiveListening.block].reverseLabel;
         document.getElementById('archive-progress').textContent =
             `Expression ${current} / ${total} • ${modeText}`;
     }
@@ -1595,76 +1867,27 @@
         }
     }
 
-    function getBestVoice(lang) {
-        const voices = APP.voices.length ? APP.voices : (window.speechSynthesis?.getVoices?.() || []);
-        if (!voices.length) return null;
-
-        const code = String(lang || 'fr-FR').toLowerCase();
-        const base = code.split('-')[0];
-
-        const keywords = {
-            tr: ['turk', 'turkish', 'türk', 'turkiye'],
-            ro: ['roman', 'romanian', 'român', 'romania'],
-            fr: ['french', 'français', 'francais'],
-            en: ['english'],
-            it: ['italian', 'italiano']
-        };
-
-        const score = (v) => {
-            const vLang = String(v.lang || '').toLowerCase();
-            const vName = String(v.name || '').toLowerCase();
-            let s = 0;
-
-            if (vLang === code) s += 1000;
-            if (vLang.startsWith(base)) s += 500;
-            if (v.localService) s += 80;
-            if (v.default) s += 40;
-
-            const keys = keywords[base] || [];
-            if (keys.some(k => vName.includes(k))) s += 250;
-
-            if (base === 'tr' && vLang.includes('tr')) s += 300;
-            if (base === 'ro' && vLang.includes('ro')) s += 300;
-            if (base === 'fr' && vLang.includes('fr')) s += 300;
-            if (base === 'en' && vLang.includes('en')) s += 300;
-            if (base === 'it' && vLang.includes('it')) s += 300;
-
-            return s;
-        };
-
-        const sorted = [...voices].sort((a, b) => score(b) - score(a));
-        return sorted[0] || null;
-    }
-
     function speakText(text, lang = 'fr-FR') {
         if (!('speechSynthesis' in window)) {
             alert('Votre navigateur ne supporte pas la synthèse vocale.');
             return;
         }
 
-        window.speechSynthesis.cancel();
+        if (!APP.voicesReady) {
+            loadVoices();
+        }
 
+        window.speechSynthesis.cancel();
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.lang = lang;
 
-        const voice = getBestVoice(lang);
-        if (voice) utterance.voice = voice;
-
-        if (String(lang).startsWith('fr')) {
-            utterance.rate = 0.95;
-        } else if (String(lang).startsWith('tr')) {
-            utterance.rate = 0.88;
-        } else if (String(lang).startsWith('ro')) {
-            utterance.rate = 0.9;
-        } else if (String(lang).startsWith('it')) {
-            utterance.rate = 0.93;
-        } else {
-            utterance.rate = 0.92;
+        const voice = findBestVoice(lang);
+        if (voice) {
+            utterance.voice = voice;
         }
 
+        utterance.rate = lang.startsWith('fr') ? 0.95 : 0.92;
         utterance.pitch = 1;
-        utterance.volume = 1;
-
         window.speechSynthesis.speak(utterance);
     }
 
