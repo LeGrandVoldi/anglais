@@ -16,12 +16,14 @@
             --text:#1f2937;
         }
         * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
         body{
             min-height:100vh;
             margin:0;
             padding:16px;
             background: linear-gradient(135deg,var(--bg1) 0%,var(--bg2) 100%);
             color:var(--text);
+            overflow-x:hidden;
         }
         .app-shell{
             max-width:1200px;
@@ -331,47 +333,7 @@
             border:1px dashed #e5e7eb;
             border-radius:12px;
         }
-        .archive-listening-panel{
-            background: linear-gradient(135deg, #0f766e, #22c55e);
-            color:#fff;
-            border-radius:22px;
-            padding:18px;
-            box-shadow:0 18px 45px rgba(0,0,0,.12);
-            min-height:260px;
-        }
-        .archive-listening-panel .title{
-            display:flex;
-            justify-content:space-between;
-            gap:10px;
-            flex-wrap:wrap;
-            align-items:center;
-            margin-bottom:10px;
-        }
-        .archive-listening-panel .big-box{
-            background:#fff;
-            color:#111827;
-            border-radius:18px;
-            padding:16px;
-            min-height:130px;
-            box-shadow:0 12px 22px rgba(0,0,0,.12);
-        }
-        .archive-listening-panel .controls{
-            display:flex;
-            gap:8px;
-            flex-wrap:wrap;
-            margin-top:12px;
-        }
-        .month-chip{
-            display:inline-flex;
-            align-items:center;
-            gap:6px;
-            padding:6px 10px;
-            border-radius:999px;
-            background:#ede9fe;
-            color:#5b21b6;
-            font-weight:700;
-            font-size:.85rem;
-        }
+        .archive-listening-panel,
         .listening-panel{
             background: linear-gradient(135deg, #0f766e, #22c55e);
             color:#fff;
@@ -379,8 +341,11 @@
             padding:18px;
             box-shadow:0 18px 45px rgba(0,0,0,.12);
             min-height:260px;
+        }
+        .listening-panel{
             display:none;
         }
+        .archive-listening-panel .title,
         .listening-panel .title{
             display:flex;
             justify-content:space-between;
@@ -389,6 +354,7 @@
             align-items:center;
             margin-bottom:10px;
         }
+        .archive-listening-panel .big-box,
         .listening-panel .big-box{
             background:#fff;
             color:#111827;
@@ -397,6 +363,7 @@
             min-height:130px;
             box-shadow:0 12px 22px rgba(0,0,0,.12);
         }
+        .archive-listening-panel .controls,
         .listening-panel .controls{
             display:flex;
             gap:8px;
@@ -442,6 +409,9 @@
         .small-help{
             font-size:.86rem;
             color:#6b7280;
+        }
+        .module-anchor{
+            scroll-margin-top: 14px;
         }
         @media (max-width: 992px){
             .stat-grid{ grid-template-columns:repeat(2, minmax(0, 1fr)); }
@@ -501,7 +471,7 @@
     <div class="tab-content" id="mainTabsContent">
         <div id="dynamic-panels"></div>
 
-        <div class="tab-pane fade" id="archive-panel" role="tabpanel" aria-labelledby="archive-tab" tabindex="0">
+        <div class="tab-pane fade module-anchor" id="archive-panel" role="tabpanel" aria-labelledby="archive-tab" tabindex="0">
             <div class="glass-card">
                 <div class="card-top">
                     <h2><i class="bi bi-archive"></i> Archive mensuelle</h2>
@@ -551,7 +521,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 (() => {
-    const STORAGE_KEY = 'dual_language_monthly_v3';
+    const STORAGE_KEY = 'dual_language_monthly_v4';
     const LEGACY_KEY = 'language_phrases';
 
     const APP = {
@@ -686,15 +656,27 @@
             queue: [],
             current: null,
             revealed: false
-        }
+        },
+        voices: []
     };
 
     document.addEventListener('DOMContentLoaded', () => {
         injectPanels();
+        setupVoices();
         loadEntries();
         wireEvents();
         renderAll();
+        scrollActiveTabToView('#en-panel');
     });
+
+    function setupVoices() {
+        if (!('speechSynthesis' in window)) return;
+        const refresh = () => {
+            APP.voices = window.speechSynthesis.getVoices() || [];
+        };
+        refresh();
+        window.speechSynthesis.onvoiceschanged = refresh;
+    }
 
     function injectPanels() {
         const root = document.getElementById('dynamic-panels');
@@ -703,9 +685,8 @@
 
     function createBlockPanel(block) {
         const cfg = APP.blocks[block];
-
         return `
-        <div class="tab-pane fade ${block === 'en' ? 'show active' : ''}" id="${block}-panel" role="tabpanel" aria-labelledby="${block}-tab" tabindex="0">
+        <div class="tab-pane fade ${block === 'en' ? 'show active' : ''} module-anchor" id="${block}-panel" role="tabpanel" aria-labelledby="${block}-tab" tabindex="0">
             <div class="glass-card">
                 <div class="card-top">
                     <h2><i class="bi bi-journal-plus"></i> Bloc ${cfg.title}</h2>
@@ -819,6 +800,21 @@
         document.getElementById('archive-exit-listen').addEventListener('click', exitArchiveListening);
 
         document.addEventListener('click', handleGlobalClicks);
+
+        document.querySelectorAll('[data-bs-toggle="pill"]').forEach(btn => {
+            btn.addEventListener('shown.bs.tab', (e) => {
+                const target = e.target.getAttribute('data-bs-target');
+                if (target) scrollActiveTabToView(target);
+            });
+        });
+    }
+
+    function scrollActiveTabToView(targetSelector) {
+        const el = document.querySelector(targetSelector);
+        if (!el) return;
+        setTimeout(() => {
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 80);
     }
 
     function handleGlobalClicks(e) {
@@ -956,7 +952,6 @@
         const cfg = APP.blocks[block];
         const source = document.getElementById(cfg.sourceInput).value.trim();
         const target = document.getElementById(cfg.targetInput).value.trim();
-
         if (!source || !target) return;
 
         const now = new Date().toISOString();
@@ -976,6 +971,7 @@
         document.getElementById(cfg.form).reset();
         renderAll();
         toast(`${cfg.label} enregistré(e).`, 'success');
+        scrollActiveTabToView(`#${block}-panel`);
     }
 
     function getEntries(block, monthKey = getCurrentMonthKey()) {
@@ -1167,15 +1163,11 @@
             : APP.listening.current.targetLang;
 
         document.getElementById(cfg.progress).textContent =
-            `Expression ${getCurrentMonthCount(APP.listening.activeBlock)} • restantes ${APP.listening.queue.length + 1}`;
+            `Expression en cours • restantes ${APP.listening.queue.length + 1}`;
 
         hideListeningText();
         speakText(text, lang);
         renderListeningButtons();
-    }
-
-    function getCurrentMonthCount(block) {
-        return getEntries(block).length;
     }
 
     function showCurrentListening() {
@@ -1253,7 +1245,7 @@
 
     function finishListening() {
         const cfg = APP.blocks[APP.listening.activeBlock];
-        const total = getCurrentMonthCount(APP.listening.activeBlock);
+        const total = getEntries(APP.listening.activeBlock).length;
         const box = document.getElementById(cfg.box);
         box.innerHTML = `
             <div class="text-center fade-in">
@@ -1590,7 +1582,7 @@
         const remaining = APP.archiveListening.queue.length;
         const current = total - remaining;
         const modeText = APP.archiveListening.direction === 'forward'
-            ? (APP.archiveListening.block === 'en' ? 'EN → FR' : `${APP.archiveListening.block.toUpperCase()} → FR`)
+            ? `${APP.archiveListening.block.toUpperCase()} → FR`
             : `FR → ${APP.archiveListening.block.toUpperCase()}`;
         document.getElementById('archive-progress').textContent =
             `Expression ${current} / ${total} • ${modeText}`;
@@ -1603,6 +1595,47 @@
         }
     }
 
+    function getBestVoice(lang) {
+        const voices = APP.voices.length ? APP.voices : (window.speechSynthesis?.getVoices?.() || []);
+        if (!voices.length) return null;
+
+        const code = String(lang || 'fr-FR').toLowerCase();
+        const base = code.split('-')[0];
+
+        const keywords = {
+            tr: ['turk', 'turkish', 'türk', 'turkiye'],
+            ro: ['roman', 'romanian', 'român', 'romania'],
+            fr: ['french', 'français', 'francais'],
+            en: ['english'],
+            it: ['italian', 'italiano']
+        };
+
+        const score = (v) => {
+            const vLang = String(v.lang || '').toLowerCase();
+            const vName = String(v.name || '').toLowerCase();
+            let s = 0;
+
+            if (vLang === code) s += 1000;
+            if (vLang.startsWith(base)) s += 500;
+            if (v.localService) s += 80;
+            if (v.default) s += 40;
+
+            const keys = keywords[base] || [];
+            if (keys.some(k => vName.includes(k))) s += 250;
+
+            if (base === 'tr' && vLang.includes('tr')) s += 300;
+            if (base === 'ro' && vLang.includes('ro')) s += 300;
+            if (base === 'fr' && vLang.includes('fr')) s += 300;
+            if (base === 'en' && vLang.includes('en')) s += 300;
+            if (base === 'it' && vLang.includes('it')) s += 300;
+
+            return s;
+        };
+
+        const sorted = [...voices].sort((a, b) => score(b) - score(a));
+        return sorted[0] || null;
+    }
+
     function speakText(text, lang = 'fr-FR') {
         if (!('speechSynthesis' in window)) {
             alert('Votre navigateur ne supporte pas la synthèse vocale.');
@@ -1610,22 +1643,28 @@
         }
 
         window.speechSynthesis.cancel();
+
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.lang = lang;
 
-        if (lang.startsWith('fr')) {
+        const voice = getBestVoice(lang);
+        if (voice) utterance.voice = voice;
+
+        if (String(lang).startsWith('fr')) {
             utterance.rate = 0.95;
-        } else if (lang.startsWith('tr')) {
+        } else if (String(lang).startsWith('tr')) {
+            utterance.rate = 0.88;
+        } else if (String(lang).startsWith('ro')) {
             utterance.rate = 0.9;
-        } else if (lang.startsWith('ro')) {
-            utterance.rate = 0.92;
-        } else if (lang.startsWith('it')) {
+        } else if (String(lang).startsWith('it')) {
             utterance.rate = 0.93;
         } else {
             utterance.rate = 0.92;
         }
 
         utterance.pitch = 1;
+        utterance.volume = 1;
+
         window.speechSynthesis.speak(utterance);
     }
 
