@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    
+
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Apprentissage Anglais, Italien, Turc & Roumain ↔ Français</title>
@@ -508,7 +508,7 @@
                 </div>
                 <div class="card-body-pad">
                     <div class="subtle-note mb-3">
-                        Toutes les données ajoutées ici sont rangées automatiquement dans le mois en cours. Quand le mois change, elles passent dans l’archive sans être supprimées.
+                        Toutes les données ajoutées ici sont rangées automatiquement dans le mois en cours. Quand le mois change, elles passent dans l'archive sans être supprimées.
                     </div>
 
                     <div class="stat-grid">
@@ -574,7 +574,7 @@
                         <div class="big-box" id="en-listening-box">
                             <div class="text-center text-muted py-4">
                                 <i class="bi bi-soundwave" style="font-size:2rem;"></i>
-                                <div class="mt-2">Cliquez sur un mode d’écoute</div>
+                                <div class="mt-2">Cliquez sur un mode d'écoute</div>
                             </div>
                         </div>
                         <div class="controls">
@@ -667,7 +667,7 @@
                         <div class="big-box" id="it-listening-box">
                             <div class="text-center text-muted py-4">
                                 <i class="bi bi-soundwave" style="font-size:2rem;"></i>
-                                <div class="mt-2">Cliquez sur un mode d’écoute</div>
+                                <div class="mt-2">Cliquez sur un mode d'écoute</div>
                             </div>
                         </div>
                         <div class="controls">
@@ -694,7 +694,7 @@
                 </div>
                 <div class="card-body-pad">
                     <div class="subtle-note mb-3">
-                        Ici, vous enregistrez vos expressions turques et leurs traductions françaises. L’audio utilise une voix turque native pour un accent authentique.
+                        Ici, vous enregistrez vos expressions turques et leurs traductions françaises. L'audio utilise une voix turque native pour un accent authentique.
                     </div>
 
                     <div class="stat-grid">
@@ -760,7 +760,7 @@
                         <div class="big-box" id="tr-listening-box">
                             <div class="text-center text-muted py-4">
                                 <i class="bi bi-soundwave" style="font-size:2rem;"></i>
-                                <div class="mt-2">Cliquez sur un mode d’écoute</div>
+                                <div class="mt-2">Cliquez sur un mode d'écoute</div>
                             </div>
                         </div>
                         <div class="controls">
@@ -787,7 +787,7 @@
                 </div>
                 <div class="card-body-pad">
                     <div class="subtle-note mb-3">
-                        Ici, vous enregistrez vos expressions roumaines et leurs traductions françaises. L’audio utilise une voix roumaine native pour un accent authentique.
+                        Ici, vous enregistrez vos expressions roumaines et leurs traductions françaises. L'audio utilise une voix roumaine native pour un accent authentique.
                     </div>
 
                     <div class="stat-grid">
@@ -853,7 +853,7 @@
                         <div class="big-box" id="ro-listening-box">
                             <div class="text-center text-muted py-4">
                                 <i class="bi bi-soundwave" style="font-size:2rem;"></i>
-                                <div class="mt-2">Cliquez sur un mode d’écoute</div>
+                                <div class="mt-2">Cliquez sur un mode d'écoute</div>
                             </div>
                         </div>
                         <div class="controls">
@@ -996,7 +996,10 @@
             revealed: false
         },
         voicesCache: [],
-        voicesReady: false
+        voicesReady: false,
+        speechPrimed: false,
+        isMobile: /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent),
+        isIOS: /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
     };
 
     Object.keys(BLOCKS_CONFIG).forEach(block => {
@@ -1030,39 +1033,118 @@
     const BLOCK_KEYS = Object.keys(APP.blocks);
 
     document.addEventListener('DOMContentLoaded', () => {
-        loadVoices();
-        if ('speechSynthesis' in window) {
-            window.speechSynthesis.onvoiceschanged = loadVoices;
-        }
+        initSpeechSynthesis();
         loadEntries();
         wireEvents();
         renderAll();
     });
 
-    function loadVoices() {
-        if (!('speechSynthesis' in window)) return;
-        APP.voicesCache = window.speechSynthesis.getVoices() || [];
-        APP.voicesReady = APP.voicesCache.length > 0;
+    // Nouvelle fonction pour initialiser correctement la synthèse vocale
+    function initSpeechSynthesis() {
+        if (!('speechSynthesis' in window)) {
+            console.warn('Speech synthesis not supported');
+            return;
+        }
+
+        // Charger les voix initialement
+        loadVoices();
+
+        // Écouter le chargement des voix (peut prendre du temps sur mobile)
+        if ('onvoiceschanged' in window.speechSynthesis) {
+            window.speechSynthesis.onvoiceschanged = () => {
+                loadVoices();
+            };
+        }
+
+        // Sur mobile, les voix peuvent mettre du temps à charger
+        // On réessaie plusieurs fois
+        let attempts = 0;
+        const maxAttempts = APP.isMobile ? 10 : 3;
+        const checkVoices = setInterval(() => {
+            attempts++;
+            loadVoices();
+            if (APP.voicesReady || attempts >= maxAttempts) {
+                clearInterval(checkVoices);
+            }
+        }, 300);
+
+        // Primer pour iOS - crucial pour que l'audio fonctionne
+        if (APP.isIOS) {
+            // On doit attendre une interaction utilisateur pour primer sur iOS
+            document.addEventListener('click', primeSpeechForIOS, { once: true });
+            document.addEventListener('touchstart', primeSpeechForIOS, { once: true });
+        }
     }
 
+    // Amorçage pour iOS Safari
+    function primeSpeechForIOS() {
+        if (APP.speechPrimed || !('speechSynthesis' in window)) return;
+
+        // Parler un texte vide pour "réveiller" le moteur de synthèse sur iOS
+        const utterance = new SpeechSynthesisUtterance('');
+        utterance.lang = 'fr-FR';
+        utterance.rate = 0.1;
+        window.speechSynthesis.speak(utterance);
+
+        // Petit délai puis annuler
+        setTimeout(() => {
+            window.speechSynthesis.cancel();
+            APP.speechPrimed = true;
+        }, 100);
+    }
+
+    function loadVoices() {
+        if (!('speechSynthesis' in window)) return;
+        try {
+            const voices = window.speechSynthesis.getVoices();
+            if (voices && voices.length > 0) {
+                APP.voicesCache = voices;
+                APP.voicesReady = true;
+            }
+        } catch (e) {
+            console.warn('Error loading voices:', e);
+        }
+    }
+
+    // Fonction améliorée pour trouver la meilleure voix
     function findBestVoice(lang) {
-        if (!APP.voicesReady) {
+        // Toujours recharger les voix au cas où
+        if (!APP.voicesReady || APP.voicesCache.length === 0) {
             loadVoices();
         }
-        const voices = APP.voicesCache;
-        if (!voices.length) return null;
 
-        const langLower = (lang || '').toLowerCase();
+        const voices = APP.voicesCache;
+        if (!voices || voices.length === 0) {
+            return null;
+        }
+
+        const langLower = (lang || 'fr-FR').toLowerCase();
         const baseLang = langLower.split('-')[0];
 
+        // Priorité 1: correspondance exacte
         let exact = voices.filter(v => (v.lang || '').toLowerCase() === langLower);
-        if (exact.length) return exact[0];
+        if (exact.length) {
+            // Sur mobile, préférer les voix locales
+            const local = exact.find(v => v.localService);
+            if (local) return local;
+            return exact[0];
+        }
 
+        // Priorité 2: même langue, any région (ex: fr-CA pour fr-FR)
         let sameBase = voices.filter(v => (v.lang || '').toLowerCase().startsWith(baseLang + '-'));
-        if (sameBase.length) return sameBase[0];
+        if (sameBase.length) {
+            const local = sameBase.find(v => v.localService);
+            if (local) return local;
+            return sameBase[0];
+        }
 
+        // Priorité 3: contient le code langue
         let anyBase = voices.filter(v => (v.lang || '').toLowerCase().startsWith(baseLang));
-        if (anyBase.length) return anyBase[0];
+        if (anyBase.length) {
+            const local = anyBase.find(v => v.localService);
+            if (local) return local;
+            return anyBase[0];
+        }
 
         return null;
     }
@@ -1269,7 +1351,7 @@
 
         document.getElementById(cfg.listHelp).textContent = monthEntries.length
             ? `${monthEntries.length} expression(s) pour ${monthLabel(monthKey)}`
-            : `Aucune expression dans ${monthLabel(monthKey)} pour l’instant.`;
+            : `Aucune expression dans ${monthLabel(monthKey)} pour l'instant.`;
 
         const listEl = document.getElementById(cfg.list);
         if (!monthEntries.length) {
@@ -1504,7 +1586,7 @@
             <div class="text-center py-4">
                 <div class="spinner-border text-light mb-3" role="status"></div>
                 <div class="fw-bold">Écoute en cours...</div>
-                <div class="muted-white">Appuyez sur “Afficher” pour voir la réponse.</div>
+                <div class="muted-white">Appuyez sur "Afficher" pour voir la réponse.</div>
             </div>
         `;
         document.getElementById(cfg.progress).textContent = 'Expression en cours';
@@ -1517,7 +1599,7 @@
         const box = document.getElementById(cfg.box);
         box.innerHTML = `
             <div class="text-center fade-in">
-                <h3 class="mb-3">🎉 Bravo !</h3>
+                <h3 class="mb-3">Bravo !</h3>
                 <p class="mb-0">Vous avez terminé les ${total} expression(s) de ce mois.</p>
             </div>
         `;
@@ -1813,7 +1895,7 @@
             <div class="text-center py-4">
                 <div class="spinner-border text-light mb-3" role="status"></div>
                 <div class="fw-bold">Écoute en cours...</div>
-                <div class="muted-white">Appuyez sur “Afficher” pour voir la réponse.</div>
+                <div class="muted-white">Appuyez sur "Afficher" pour voir la réponse.</div>
             </div>
         `;
         updateArchiveListeningProgress();
@@ -1824,7 +1906,7 @@
         const total = APP.entries.filter(item => item.monthKey === APP.archiveListening.monthKey && item.block === APP.archiveListening.block).length;
         document.getElementById('archive-listening-box').innerHTML = `
             <div class="text-center fade-in">
-                <h3 class="mb-3">🎉 Bravo !</h3>
+                <h3 class="mb-3">Bravo !</h3>
                 <p class="mb-0">Vous avez terminé les ${total} expression(s) de ${monthLabel(APP.archiveListening.monthKey)}.</p>
             </div>
         `;
@@ -1867,30 +1949,94 @@
         }
     }
 
+    // Fonction speakText COMPLETEMENT réécrite pour mobile
     function speakText(text, lang = 'fr-FR') {
         if (!('speechSynthesis' in window)) {
             alert('Votre navigateur ne supporte pas la synthèse vocale.');
             return;
         }
 
-        if (!APP.voicesReady) {
-            loadVoices();
-        }
-
+        // Annuler tout discours en cours
         window.speechSynthesis.cancel();
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = lang;
 
-        const voice = findBestVoice(lang);
-        if (voice) {
-            utterance.voice = voice;
+        // Sur mobile, et surtout iOS, il faut parfois un délai
+        // et répéter l'opération pour que ça fonctionne
+        const doSpeak = (retryCount = 0) => {
+            // Recharger les voix à chaque fois sur mobile
+            if (APP.isMobile || !APP.voicesReady) {
+                loadVoices();
+            }
+
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = lang;
+
+            // Trouver la meilleure voix
+            const voice = findBestVoice(lang);
+            if (voice) {
+                utterance.voice = voice;
+                utterance.voiceURI = voice.voiceURI;
+            }
+
+            // Vitesse légèrement plus lente pour la clarté
+            utterance.rate = lang.startsWith('fr') ? 0.9 : 0.85;
+            utterance.pitch = 1;
+
+            // Sur iOS, on a parfois besoin de définir le volume explicitement
+            if (APP.isIOS) {
+                utterance.volume = 1;
+            }
+
+            // Gestion des erreurs
+            utterance.onerror = (event) => {
+                console.warn('Speech error:', event.error);
+                // Réessayer une fois en cas d'erreur sur mobile
+                if (retryCount < 1 && (event.error === 'network' || event.error === 'synthesis-unavailable')) {
+                    setTimeout(() => doSpeak(retryCount + 1), 300);
+                }
+            };
+
+            // Pour iOS: parfois la première utterance ne joue pas
+            // On ajoute un gestionnaire pour réessayer si nécessaire
+            utterance.onstart = () => {
+                // Le discours a commencé, tout va bien
+            };
+
+            utterance.onend = () => {
+                // Discours terminé
+            };
+
+            // Finalement, parler
+            try {
+                window.speechSynthesis.speak(utterance);
+
+                // iOS bug workaround: sometimes speech doesn't start
+                // On vérifie après un court délai
+                if (APP.isIOS && retryCount === 0) {
+                    setTimeout(() => {
+                        if (!window.speechSynthesis.speaking && !window.speechSynthesis.pending) {
+                            // Le discours n'a pas démarré, réessayer
+                            window.speechSynthesis.cancel();
+                            doSpeak(retryCount + 1);
+                        }
+                    }, 100);
+                }
+            } catch (e) {
+                console.warn('Speech synthesis error:', e);
+                if (retryCount < 1) {
+                    setTimeout(() => doSpeak(retryCount + 1), 200);
+                }
+            }
+        };
+
+        // Petit délai sur mobile pour s'assurer que le moteur est prêt
+        if (APP.isMobile) {
+            setTimeout(() => doSpeak(), 50);
+        } else {
+            doSpeak();
         }
-
-        utterance.rate = lang.startsWith('fr') ? 0.95 : 0.92;
-        utterance.pitch = 1;
-        window.speechSynthesis.speak(utterance);
     }
 
+    // Exposer la fonction pour les boutons inline
     window.__dualAppSpeak = speakText;
 
     function toast(message, type = 'success') {
